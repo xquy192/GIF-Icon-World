@@ -1,21 +1,34 @@
 # Contributing
 
-Thanks for considering a contribution. Small, focused changes are easier to review and test.
-
 ## Bug reports
 
-Open a GitHub Issue and include the Minecraft version, Fabric Loader version, mod version, operating system, steps to reproduce, expected result and relevant `latest.log` lines. For GIF-specific issues, include a small test GIF when possible. Remove private paths or other personal information before posting logs.
+Open a GitHub Issue and include:
+
+- Minecraft version
+- Fabric Loader version
+- GIF Icon World version
+- Operating system
+- Steps to reproduce the problem
+- Relevant lines from `latest.log`
+
+For GIF-related problems, attach a small file that reproduces the issue when possible. Remove personal file paths and other private information from logs before posting them.
 
 ## Code changes
 
-- Keep the client-only scope unless there is a clear reason to change it.
-- Keep decoding, settings persistence, cache management and UI code in their existing packages where practical.
-- Avoid adding dependencies for work already supported by Java or Minecraft.
-- Keep GIF input limits in place when changing the decoder.
-- Check exact Minecraft 26.3 signatures before modifying mixins.
-- Keep UI wording consistent with the existing Vietnamese interface.
-- Use names and comments that explain intent without restating the code.
+- Keep the mod client-side unless a change requires otherwise.
+- Keep GIF decoding, settings, cache handling and screen code in their current packages where possible.
+- Do not add a dependency for something Java or Minecraft already provides.
+- Keep the GIF input limits when changing the decoder.
+- Check the Minecraft 26.3 method and field signatures before changing a mixin.
+- Use the existing Vietnamese terms in the in-game interface.
+- Keep comments focused on decisions that are not obvious from the code.
 
 ## Build and test
 
-Use `build.bat` on Windows, or `gradle --no-daemon clean build` with JDK 25 and Gradle 9.8.2. Then follow the checklist in [docs/DEVELOPMENT.md](docs/DEVELOPMENT.md). A successful compile does not replace an in-game test.
+On Windows, run `build.bat`. For a manual build, use JDK 25 and Gradle 9.8.2:
+
+```sh
+gradle --no-daemon clean build
+```
+
+After the build, follow the in-game checks in [docs/DEVELOPMENT.md](docs/DEVELOPMENT.md). A successful compile does not confirm that the mod works in-game.

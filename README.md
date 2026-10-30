@@ -2,30 +2,30 @@
 
 ![GIF Icon World](src/main/resources/assets/gif_icon_world/icon.png)
 
-A client-side Fabric mod for Minecraft Java 26.3. It lets each singleplayer save use an animated GIF as its world-list icon.
+GIF Icon World is a client-side Fabric mod for Minecraft Java 26.3. It lets each singleplayer save use an animated GIF in the world list.
 
-Drop a file named `icon.gif` into the save folder, or import one from the in-game **Edit World → GIF Icon World** screen. The mod updates Minecraft's existing world icon texture; it does not draw a second icon over the world row. The normal `icon.png` is kept as a fallback.
+Put a file named `icon.gif` in a world's save folder, or open **Edit World → GIF Icon World** to import one. The mod updates the icon Minecraft already displays for that save. The original `icon.png` stays in place and is used when the GIF cannot be loaded.
 
-## Features
+## What it does
 
-- Automatic discovery of `icon.gif` in each save folder.
-- Drag-and-drop and native file picker in the world editor.
-- Live preview before saving.
-- Speed, frame range, X/Y offset, zoom, fit mode and playback controls.
-- Per-world settings in `gif_icon_world.json`.
-- Periodic file checks and cached GIF decoding.
-- Fallback to the regular world icon when a GIF is missing or invalid.
+- Checks each save folder for `icon.gif`.
+- Imports GIFs through the file picker or drag-and-drop.
+- Shows a preview before saving.
+- Lets you change playback speed, frame range, X/Y position, zoom, fit mode and playback mode.
+- Stores settings for each world in `gif_icon_world.json`.
+- Checks for changed GIF and settings files while the world list is open.
+- Falls back to the static world icon if a GIF is missing or cannot be read.
 
 ## Requirements
 
 - Minecraft Java 26.3
-- Fabric Loader 0.20.1+
-- Java 25+
+- Fabric Loader 0.20.1 or newer
+- Java 25 or newer
 - Client side only
 
 ## Build
 
-On Windows, run `build.bat` from the project directory. It prepares Java and Gradle when needed and runs a clean build. The output JAR is placed in `build/libs/`.
+On Windows, run `build.bat` from the project folder. It checks for Java and Gradle and runs a clean build. The JAR is written to `build/libs/`.
 
 For a manual build, use JDK 25 and Gradle 9.8.2:
 
@@ -33,15 +33,15 @@ For a manual build, use JDK 25 and Gradle 9.8.2:
 gradle --no-daemon clean build
 ```
 
-See [docs/BUILDING.md](docs/BUILDING.md) for details.
+See [docs/BUILDING.md](docs/BUILDING.md) for setup details.
 
 ## Documentation
 
 - [Vietnamese README](README.vi.md)
 - [Installation](docs/INSTALLATION.md)
-- [Settings and GIF limits](docs/SETTINGS.md)
+- [GIF settings](docs/SETTINGS.md)
 - [Development notes](docs/DEVELOPMENT.md)
-- [Build guide](docs/BUILDING.md)
+- [Build instructions](docs/BUILDING.md)
 - [Changelog](CHANGELOG.md)
 - [Contributing](CONTRIBUTING.md)
 
@@ -50,8 +50,6 @@ See [docs/BUILDING.md](docs/BUILDING.md) for details.
 - GitHub: [xquy192](https://github.com/xquy192)
 - Discord: `xuanquy192_21009`
 - Email: [dinhxuanquy192@gmail.com](mailto:dinhxuanquy192@gmail.com)
-
-The email address is public in this repository. GitHub Issues are preferred for bug reports.
 
 ## License
 

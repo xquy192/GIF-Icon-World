@@ -3,28 +3,28 @@
 ## 1.2.3 - 2026-10-30
 
 ### Fixed
-- Place the GIF Icon World button directly below Minecraft's Optimize World button using the vanilla widget's live position and dimensions.
-- Recalculate the placement whenever the Edit World screen is initialized, adapting to GUI scale and window-size changes.
+- Move the GIF Icon World button below Minecraft's Optimize World button. Its position and size come from the vanilla button.
+- Recalculate the position each time the Edit World screen opens, so the button follows the current GUI layout.
 
 ## 1.2.2 - 2026-10-30
 
 ### Fixed
-- Corrected enum validation calls for GIF fit and playback settings.
-- Resolve the world save directory with `LevelStorageAccess#getLevelPath(LevelResource.ROOT)` for the Minecraft 26.3 client API.
-- Improved Windows build-helper error reporting so Gradle compiler diagnostics are preserved without a secondary PowerShell `Write-Error` failure.
+- Fix enum validation for GIF fit and playback settings.
+- Get the save directory with `LevelStorageAccess#getLevelPath(LevelResource.ROOT)`, as required by the Minecraft 26.3 client API.
+- Keep Gradle compiler output in the build log without triggering a second PowerShell error.
 
 ## 1.2.1
 
-- Added a project logo to the mod metadata and repository assets.
-- Reworked the project documentation and added separate install, settings, build and development guides.
-- Added a GitHub Actions build workflow and issue templates.
-- Cleaned up settings and playback code formatting without changing the editor controls.
+- Add the project logo to the mod metadata and repository.
+- Add separate guides for installation, GIF settings, building and development.
+- Add a GitHub Actions build workflow and issue templates.
+- Reformat settings and playback code without changing the editor controls.
 
 ## 1.2.0
 
-- Added the GIF import screen to Edit World.
-- Added drag-and-drop and native file selection.
-- Added a live preview with playback, frame range, speed, offset, zoom and fit controls.
-- Added per-world settings in `gif_icon_world.json`.
-- Added automatic discovery of `icon.gif` and fallback to `icon.png`.
-- Added cached GIF decoding and periodic file checks.
+- Add the GIF import screen to Edit World.
+- Add file picker and drag-and-drop import.
+- Add an editor preview with speed, frame range, position, zoom, fit and playback controls.
+- Save settings for each world in `gif_icon_world.json`.
+- Find `icon.gif` automatically and fall back to `icon.png`.
+- Cache decoded GIFs and check files periodically.

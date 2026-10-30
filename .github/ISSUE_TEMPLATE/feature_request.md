@@ -6,8 +6,8 @@ labels: enhancement
 assignees: ''
 ---
 
-## What would you like to change?
+## What would you like to add or change?
 
-## How should it work?
+## How do you expect it to work?
 
-A short example or mock-up is useful, but not required.
+A short example or mock-up can help explain the idea.

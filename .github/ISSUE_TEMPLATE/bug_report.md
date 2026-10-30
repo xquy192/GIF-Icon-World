@@ -1,6 +1,6 @@
 ---
 name: Bug report
-about: Report a problem with GIF Icon World
+about: Report a problem you can reproduce in GIF Icon World
 title: "[Bug] "
 labels: bug
 assignees: ''
@@ -15,7 +15,7 @@ assignees: ''
 
 ## What happened?
 
-## Steps to reproduce
+## How to reproduce it
 
 1.
 2.
@@ -23,7 +23,7 @@ assignees: ''
 
 ## Logs
 
-Attach the relevant part of `latest.log`. Remove personal paths or other private information first.
+Attach the relevant lines from `latest.log`. Remove personal paths and other private information first.
 
 ## GIF details (if relevant)
 
