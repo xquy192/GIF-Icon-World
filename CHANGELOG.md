@@ -1,5 +1,11 @@
 # Changelog
 
+## 1.2.3 - 2026-10-30
+
+### Fixed
+- Place the GIF Icon World button directly below Minecraft's Optimize World button using the vanilla widget's live position and dimensions.
+- Recalculate the placement whenever the Edit World screen is initialized, adapting to GUI scale and window-size changes.
+
 ## 1.2.2 - 2026-10-30
 
 ### Fixed
