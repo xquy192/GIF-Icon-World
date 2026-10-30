@@ -35,7 +35,7 @@ public final class GifIconEditorScreen extends Screen {
     private long previewStartMs = System.currentTimeMillis();
     private int manualFrame;
     private boolean previewPaused;
-    private String status = "Chỉnh sửa chỉ áp dụng sau khi nhấn Lưu.";
+    private Component status = Component.translatable("gif_icon_world.editor.status.initial");
     private boolean statusIsError;
 
     // All positions use Minecraft's scaled GUI coordinates rather than desktop pixels.
@@ -55,7 +55,7 @@ public final class GifIconEditorScreen extends Screen {
             GifAnimation animation,
             GifIconSettings settings
     ) {
-        super(Component.literal("GIF Icon World - Chỉnh sửa"));
+        super(Component.translatable("gif_icon_world.editor.title"));
         this.parent = parent;
         this.worldDirectory = worldDirectory.toAbsolutePath().normalize();
         this.sourceGif = sourceGif.toAbsolutePath().normalize();
@@ -105,14 +105,14 @@ public final class GifIconEditorScreen extends Screen {
 
         int modeY = rowStartY + rowGap * 6;
         this.fitModeButton = this.addRenderableWidget(
-                Button.builder(Component.literal(fitModeLabel(settings.getFitMode())), button -> cycleFitMode())
+                Button.builder(fitModeLabel(settings.getFitMode()), button -> cycleFitMode())
                         .bounds(controlsX + 128, modeY, 130, 20)
                         .build()
         );
 
         int playbackY = rowStartY + rowGap * 7;
         this.playbackModeButton = this.addRenderableWidget(
-                Button.builder(Component.literal(playbackLabel(settings.getPlaybackMode())), button -> cyclePlaybackMode())
+                Button.builder(playbackLabel(settings.getPlaybackMode()), button -> cyclePlaybackMode())
                         .bounds(controlsX + 128, playbackY, 130, 20)
                         .build()
         );
@@ -121,7 +121,7 @@ public final class GifIconEditorScreen extends Screen {
         this.addRenderableWidget(Button.builder(Component.literal("◀"), button -> stepPreview(-1))
                 .bounds(controlsX + 128, previewYRow, 26, 20).build());
         this.previewToggleButton = this.addRenderableWidget(
-                Button.builder(Component.literal(previewPaused ? "Tiếp tục" : "Tạm dừng"), button -> togglePreview())
+                Button.builder(Component.translatable(previewPaused ? "gif_icon_world.editor.button.play" : "gif_icon_world.editor.button.pause"), button -> togglePreview())
                         .bounds(controlsX + 160, previewYRow, 90, 20)
                         .build()
         );
@@ -132,11 +132,11 @@ public final class GifIconEditorScreen extends Screen {
         int footerButtonWidth = Math.min(180, (this.width - 36) / 2);
         int footerLeft = (this.width - (footerButtonWidth * 2 + 8)) / 2;
         int autoFitY = Math.min(this.height - 72, this.previewY + this.previewSize + 76);
-        this.addRenderableWidget(Button.builder(Component.literal("Tự căn chỉnh"), button -> autoFit())
+        this.addRenderableWidget(Button.builder(Component.translatable("gif_icon_world.editor.button.auto_fit"), button -> autoFit())
                 .bounds(this.panelLeft + 12, autoFitY, 130, 20).build());
-        this.addRenderableWidget(Button.builder(Component.literal("Lưu"), button -> save())
+        this.addRenderableWidget(Button.builder(Component.translatable("gif_icon_world.editor.button.save"), button -> save())
                 .bounds(footerLeft, footerY, footerButtonWidth, 20).build());
-        this.addRenderableWidget(Button.builder(Component.literal("Hủy"), button -> this.minecraft.gui.setScreen(parent))
+        this.addRenderableWidget(Button.builder(Component.translatable("gif_icon_world.editor.button.cancel"), button -> this.minecraft.gui.setScreen(parent))
                 .bounds(footerLeft + footerButtonWidth + 8, footerY, footerButtonWidth, 20).build());
 
         updatePreview(true);
@@ -182,10 +182,10 @@ public final class GifIconEditorScreen extends Screen {
             float partialTick
     ) {
         super.extractRenderState(graphics, mouseX, mouseY, partialTick);
-        graphics.centeredText(this.font, Component.literal("GIF Icon World"), this.width / 2, 18, 0xFFFFFF);
+        graphics.centeredText(this.font, Component.translatable("gif_icon_world.title"), this.width / 2, 18, 0xFFFFFF);
         graphics.centeredText(
                 this.font,
-                Component.literal("Chỉnh sửa ảnh động của thế giới"),
+                Component.translatable("gif_icon_world.editor.subtitle"),
                 this.width / 2,
                 31,
                 0xFFBFBFBF
@@ -225,19 +225,19 @@ public final class GifIconEditorScreen extends Screen {
         graphics.fill(previewX - 1, previewY, previewX, bottom, 0xFFBDBDBD);
         graphics.fill(right, previewY, right + 1, bottom, 0xFFBDBDBD);
 
-        graphics.centeredText(this.font, Component.literal("Xem trước"), panelLeft + 87, previewY - 14, 0xFFFFFFFF);
+        graphics.centeredText(this.font, Component.translatable("gif_icon_world.editor.preview"), panelLeft + 87, previewY - 14, 0xFFFFFFFF);
         int infoX = panelLeft + 20;
         int infoY = previewY + this.previewSize + 12;
         graphics.text(
                 this.font,
-                Component.literal(animation.originalWidth() + " × " + animation.originalHeight()),
+                Component.translatable("gif_icon_world.editor.dimensions", animation.originalWidth(), animation.originalHeight()),
                 infoX,
                 infoY,
                 0xFFE0E0E0
         );
         graphics.text(
                 this.font,
-                Component.literal(animation.frameCount() + " khung hình"),
+                Component.translatable("gif_icon_world.editor.frame_count", animation.frameCount()),
                 infoX,
                 infoY + 13,
                 0xFFBDBDBD
@@ -258,33 +258,33 @@ public final class GifIconEditorScreen extends Screen {
         );
         graphics.text(
                 this.font,
-                Component.literal("Frame: " + (currentPreviewFrame() + 1) + "/" + animation.frameCount()),
+                Component.translatable("gif_icon_world.editor.current_frame", currentPreviewFrame() + 1, animation.frameCount()),
                 infoX,
                 infoY + 52,
                 0xFFE0E0E0
         );
 
         int valueCenter = controlsX + 176;
-        drawValue(graphics, rowStartY, "Tốc độ", String.format(Locale.ROOT, "%.1fx", settings.speed), valueCenter);
-        drawValue(graphics, rowStartY + rowGap, "Frame bắt đầu", Integer.toString(settings.startFrame), valueCenter);
-        drawValue(graphics, rowStartY + rowGap * 2, "Frame kết thúc", Integer.toString(settings.endFrame), valueCenter);
-        drawValue(graphics, rowStartY + rowGap * 3, "Vị trí X", settings.offsetX + " px", valueCenter);
-        drawValue(graphics, rowStartY + rowGap * 4, "Vị trí Y", settings.offsetY + " px", valueCenter);
-        drawValue(graphics, rowStartY + rowGap * 5, "Zoom", String.format(Locale.ROOT, "%.1fx", settings.zoom), valueCenter);
-        graphics.text(this.font, Component.literal("Căn ảnh"), controlsX, rowStartY + rowGap * 6 + 6, 0xFFFFFFFF);
-        graphics.text(this.font, Component.literal("Chế độ phát"), controlsX, rowStartY + rowGap * 7 + 6, 0xFFFFFFFF);
-        graphics.text(this.font, Component.literal("Xem trước"), controlsX, rowStartY + rowGap * 8 + 6, 0xFFFFFFFF);
+        drawValue(graphics, rowStartY, "gif_icon_world.editor.speed", String.format(Locale.ROOT, "%.1fx", settings.speed), valueCenter);
+        drawValue(graphics, rowStartY + rowGap, "gif_icon_world.editor.start_frame", Integer.toString(settings.startFrame), valueCenter);
+        drawValue(graphics, rowStartY + rowGap * 2, "gif_icon_world.editor.end_frame", Integer.toString(settings.endFrame), valueCenter);
+        drawValue(graphics, rowStartY + rowGap * 3, "gif_icon_world.editor.position_x", settings.offsetX + " px", valueCenter);
+        drawValue(graphics, rowStartY + rowGap * 4, "gif_icon_world.editor.position_y", settings.offsetY + " px", valueCenter);
+        drawValue(graphics, rowStartY + rowGap * 5, "gif_icon_world.editor.zoom", String.format(Locale.ROOT, "%.1fx", settings.zoom), valueCenter);
+        graphics.text(this.font, Component.translatable("gif_icon_world.editor.fit"), controlsX, rowStartY + rowGap * 6 + 6, 0xFFFFFFFF);
+        graphics.text(this.font, Component.translatable("gif_icon_world.editor.playback"), controlsX, rowStartY + rowGap * 7 + 6, 0xFFFFFFFF);
+        graphics.text(this.font, Component.translatable("gif_icon_world.editor.preview_controls"), controlsX, rowStartY + rowGap * 8 + 6, 0xFFFFFFFF);
 
         graphics.text(
                 this.font,
-                Component.literal("Dùng − / + để chỉnh. Lưu để áp dụng vào thế giới."),
+                Component.translatable("gif_icon_world.editor.help"),
                 panelLeft + 14,
                 this.height - 62,
                 0xFFBDBDBD
         );
         graphics.text(
                 this.font,
-                Component.literal(status),
+                status,
                 panelLeft + 14,
                 this.height - 48,
                 statusIsError ? 0xFFFF6B6B : 0xFFFFD866
@@ -292,7 +292,7 @@ public final class GifIconEditorScreen extends Screen {
     }
 
     private void drawValue(GuiGraphicsExtractor graphics, int y, String label, String value, int valueCenter) {
-        graphics.text(this.font, Component.literal(label), controlsX, y + 6, 0xFFFFFFFF);
+        graphics.text(this.font, Component.translatable(label), controlsX, y + 6, 0xFFFFFFFF);
         graphics.centeredText(this.font, Component.literal(value), valueCenter, y + 6, 0xFFE0E0E0);
     }
 
@@ -365,6 +365,8 @@ public final class GifIconEditorScreen extends Screen {
     private void cycleFitMode() {
         GifIconSettings.FitMode[] modes = GifIconSettings.FitMode.values();
         settings.fitMode = modes[(settings.getFitMode().ordinal() + 1) % modes.length].name();
+        status = Component.translatable("gif_icon_world.editor.status.fit_mode_changed", fitModeLabel(settings.getFitMode()));
+        statusIsError = false;
         refreshModeButtonMessages();
         updatePreview(true);
     }
@@ -411,7 +413,7 @@ public final class GifIconEditorScreen extends Screen {
 
     private void autoFit() {
         animation.fitToIcon(settings);
-        status = "Đã căn ảnh theo vùng nội dung GIF.";
+        status = Component.translatable("gif_icon_world.editor.status.auto_fit");
         statusIsError = false;
         refreshModeButtonMessages();
         updatePreview(true);
@@ -444,7 +446,7 @@ public final class GifIconEditorScreen extends Screen {
                 Files.deleteIfExists(temporary);
             } catch (IOException ignored) {
             }
-            this.status = "Không thể lưu: " + safeMessage(exception);
+            this.status = Component.translatable("gif_icon_world.editor.status.save_error", safeMessage(exception));
             this.statusIsError = true;
         }
     }
@@ -458,19 +460,19 @@ public final class GifIconEditorScreen extends Screen {
         }
     }
 
-    private static String fitModeLabel(GifIconSettings.FitMode mode) {
+    private static Component fitModeLabel(GifIconSettings.FitMode mode) {
         return switch (mode) {
-            case CONTAIN -> "Vừa khung";
-            case COVER -> "Phủ khung";
-            case STRETCH -> "Kéo giãn";
+            case CONTAIN -> Component.translatable("gif_icon_world.editor.fit.contain");
+            case COVER -> Component.translatable("gif_icon_world.editor.fit.cover");
+            case STRETCH -> Component.translatable("gif_icon_world.editor.fit.stretch");
         };
     }
 
-    private static String playbackLabel(GifIconSettings.PlaybackMode mode) {
+    private static Component playbackLabel(GifIconSettings.PlaybackMode mode) {
         return switch (mode) {
-            case LOOP -> "Lặp vô hạn";
-            case PING_PONG -> "Tiến / lùi";
-            case ONCE -> "Chạy một lần";
+            case LOOP -> Component.translatable("gif_icon_world.editor.playback.loop");
+            case PING_PONG -> Component.translatable("gif_icon_world.editor.playback.ping_pong");
+            case ONCE -> Component.translatable("gif_icon_world.editor.playback.once");
         };
     }
 

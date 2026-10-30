@@ -77,6 +77,11 @@ set "DETECTED_JDK="
 if exist "%JDK_CACHE%\bin\java.exe" if exist "%JDK_CACHE%\bin\javac.exe" set "DETECTED_JDK=%JDK_CACHE%"
 if defined DETECTED_JDK goto :check_candidate
 
+if defined JAVA_HOME (
+  if exist "%JAVA_HOME%\bin\java.exe" if exist "%JAVA_HOME%\bin\javac.exe" set "DETECTED_JDK=%JAVA_HOME%"
+)
+if defined DETECTED_JDK goto :check_candidate
+
 for /d %%D in ("%ProgramFiles%\Eclipse Adoptium\jdk-25*") do (
   if exist "%%~fD\bin\java.exe" if exist "%%~fD\bin\javac.exe" set "DETECTED_JDK=%%~fD"
 )

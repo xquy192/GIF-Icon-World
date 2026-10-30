@@ -22,7 +22,7 @@ public final class GifIconImportScreen extends Screen {
 
     private final Screen parent;
     private final Path worldDirectory;
-    private String status = "Thả file GIF vào khung hoặc chọn từ máy tính.";
+    private Component status = Component.translatable("gif_icon_world.import.status.initial");
     private boolean statusIsError;
     private int cardLeft;
     private int cardWidth;
@@ -30,7 +30,7 @@ public final class GifIconImportScreen extends Screen {
     private int dropBottom;
 
     public GifIconImportScreen(Screen parent, Path worldDirectory) {
-        super(Component.literal("GIF Icon World"));
+        super(Component.translatable("gif_icon_world.title"));
         this.parent = parent;
         this.worldDirectory = worldDirectory.toAbsolutePath().normalize();
     }
@@ -43,12 +43,12 @@ public final class GifIconImportScreen extends Screen {
         int center = this.width / 2;
         int buttonsY = Math.min(this.height - 110, this.dropBottom + 9);
         this.addRenderableWidget(
-                Button.builder(Component.literal("Chọn file GIF..."), button -> chooseFile())
+                Button.builder(Component.translatable("gif_icon_world.import.button.choose"), button -> chooseFile())
                         .bounds(center - 205, buttonsY, 200, 20)
                         .build()
         );
         this.addRenderableWidget(
-                Button.builder(Component.literal("Mở thư mục thế giới"), button -> openWorldFolder())
+                Button.builder(Component.translatable("gif_icon_world.import.button.open_folder"), button -> openWorldFolder())
                         .bounds(center + 5, buttonsY, 200, 20)
                         .build()
         );
@@ -56,13 +56,13 @@ public final class GifIconImportScreen extends Screen {
         Path currentGif = worldDirectory.resolve("icon.gif");
         if (Files.isRegularFile(currentGif)) {
             this.addRenderableWidget(
-                    Button.builder(Component.literal("Chỉnh sửa GIF đang dùng"), button -> openEditor(currentGif))
+                    Button.builder(Component.translatable("gif_icon_world.import.button.edit_current"), button -> openEditor(currentGif))
                             .bounds(center - 205, buttonsY + 26, 410, 20)
                             .build()
             );
         }
         this.addRenderableWidget(
-                Button.builder(Component.literal("Quay lại"), button -> this.minecraft.gui.setScreen(parent))
+                Button.builder(Component.translatable("gif_icon_world.import.button.back"), button -> this.minecraft.gui.setScreen(parent))
                         .bounds(center - 100, this.height - 28, 200, 20)
                         .build()
         );
@@ -105,10 +105,10 @@ public final class GifIconImportScreen extends Screen {
             float partialTick
     ) {
         super.extractRenderState(graphics, mouseX, mouseY, partialTick);
-        graphics.centeredText(this.font, Component.literal("GIF Icon World"), this.width / 2, 18, 0xFFFFFFFF);
+        graphics.centeredText(this.font, Component.translatable("gif_icon_world.title"), this.width / 2, 18, 0xFFFFFFFF);
         graphics.centeredText(
                 this.font,
-                Component.literal("Ảnh động cho thế giới"),
+                Component.translatable("gif_icon_world.import.subtitle"),
                 this.width / 2,
                 31,
                 0xFFBFBFBF
@@ -117,39 +117,39 @@ public final class GifIconImportScreen extends Screen {
         int dropCenter = (dropTop + dropBottom) / 2;
         graphics.centeredText(
                 this.font,
-                Component.literal("Kéo thả file GIF vào đây"),
+                Component.translatable("gif_icon_world.import.drop"),
                 this.width / 2,
                 dropCenter - 17,
                 0xFFFFFFFF
         );
         graphics.centeredText(
                 this.font,
-                Component.literal("hoặc nhấn Chọn file GIF..."),
+                Component.translatable("gif_icon_world.import.or_select"),
                 this.width / 2,
                 dropCenter,
                 0xFFD0D0D0
         );
         graphics.centeredText(
                 this.font,
-                Component.literal("Tự nhận diện độ phân giải, frame và thời gian"),
+                Component.translatable("gif_icon_world.import.detect"),
                 this.width / 2,
                 dropCenter + 17,
                 0xFFB0B0B0
         );
 
-        String current = Files.isRegularFile(worldDirectory.resolve("icon.gif"))
-                ? "Đã có icon.gif — bạn có thể thay hoặc chỉnh sửa tiếp."
-                : "Chưa có icon.gif — ảnh world hiện tại vẫn được giữ nguyên.";
-        graphics.text(this.font, Component.literal(current), cardLeft + 14, this.height - 91, 0xFFE0E0E0);
+        Component current = Files.isRegularFile(worldDirectory.resolve("icon.gif"))
+                ? Component.translatable("gif_icon_world.import.current_exists")
+                : Component.translatable("gif_icon_world.import.current_missing");
+        graphics.text(this.font, current, cardLeft + 14, this.height - 91, 0xFFE0E0E0);
 
         String pathText = worldDirectory.toString();
         if (pathText.length() > 44) {
             pathText = "…" + pathText.substring(pathText.length() - 43);
         }
-        graphics.text(this.font, Component.literal("Thư mục: " + pathText), cardLeft + 14, this.height - 77, 0xFFB0B0B0);
+        graphics.text(this.font, Component.translatable("gif_icon_world.import.world_path", pathText), cardLeft + 14, this.height - 77, 0xFFB0B0B0);
 
         int statusColor = statusIsError ? 0xFFFF6B6B : 0xFFFFD866;
-        graphics.text(this.font, Component.literal(status), cardLeft + 14, this.height - 60, statusColor);
+        graphics.text(this.font, status, cardLeft + 14, this.height - 60, statusColor);
     }
 
     @Override
@@ -164,7 +164,7 @@ public final class GifIconImportScreen extends Screen {
                 return;
             }
         }
-        setStatus("Không tìm thấy file .gif trong những file vừa thả.", true);
+        setStatus(Component.translatable("gif_icon_world.import.status.no_gif_dropped"), true);
     }
 
     private void chooseFile() {
@@ -174,11 +174,11 @@ public final class GifIconImportScreen extends Screen {
                 JFileChooser chooser = new JFileChooser(
                         Files.isDirectory(worldDirectory) ? worldDirectory.toFile() : null
                 );
-                chooser.setDialogTitle("Chọn ảnh GIF cho thế giới");
+                chooser.setDialogTitle(Component.translatable("gif_icon_world.import.dialog.title").getString());
                 chooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
                 chooser.setMultiSelectionEnabled(false);
                 chooser.setAcceptAllFileFilterUsed(false);
-                chooser.setFileFilter(new FileNameExtensionFilter("Ảnh GIF (*.gif)", "gif"));
+                chooser.setFileFilter(new FileNameExtensionFilter(Component.translatable("gif_icon_world.import.dialog.filter").getString(), "gif"));
 
                 if (chooser.showOpenDialog(null) == JFileChooser.APPROVE_OPTION
                         && chooser.getSelectedFile() != null) {
@@ -189,7 +189,7 @@ public final class GifIconImportScreen extends Screen {
             } catch (RuntimeException exception) {
                 String message = safeMessage(exception);
                 Minecraft.getInstance().execute(() ->
-                        setStatus("Không mở được cửa sổ chọn file: " + message, true)
+                        setStatus(Component.translatable("gif_icon_world.import.status.dialog_error", message), true)
                 );
                 return;
             }
@@ -199,7 +199,7 @@ public final class GifIconImportScreen extends Screen {
                 if (result != null) {
                     openEditor(result);
                 } else {
-                    setStatus("Bạn chưa chọn file GIF.", false);
+                    setStatus(Component.translatable("gif_icon_world.import.status.not_selected"), false);
                 }
             });
         });
@@ -209,15 +209,18 @@ public final class GifIconImportScreen extends Screen {
         Path normalized = source.toAbsolutePath().normalize();
         try {
             if (!Files.isRegularFile(normalized)) {
-                throw new IOException("Không tìm thấy file đã chọn.");
+                setStatus(Component.translatable("gif_icon_world.import.error.file_missing"), true);
+                return;
             }
             if (!isGifName(normalized)) {
-                throw new IOException("Chỉ nhận file có đuôi .gif.");
+                setStatus(Component.translatable("gif_icon_world.import.error.file_extension"), true);
+                return;
             }
 
             long size = Files.size(normalized);
             if (size < 1 || size > MAX_GIF_BYTES) {
-                throw new IOException("Dung lượng GIF phải từ 1 byte đến 64 MiB.");
+                setStatus(Component.translatable("gif_icon_world.import.error.file_size"), true);
+                return;
             }
 
             GifAnimation animation = GifAnimation.read(normalized);
@@ -233,7 +236,7 @@ public final class GifIconImportScreen extends Screen {
                     new GifIconEditorScreen(parent, worldDirectory, normalized, animation, settings)
             );
         } catch (IOException | RuntimeException exception) {
-            setStatus("Không đọc được GIF: " + safeMessage(exception), true);
+            setStatus(Component.translatable("gif_icon_world.import.status.read_error", safeMessage(exception)), true);
         }
     }
 
@@ -253,13 +256,13 @@ public final class GifIconImportScreen extends Screen {
                 opener = new ProcessBuilder("xdg-open", worldDirectory.toString());
             }
             opener.start();
-            setStatus("Đang mở thư mục thế giới.", false);
+            setStatus(Component.translatable("gif_icon_world.import.status.folder_opening"), false);
         } catch (IOException | RuntimeException exception) {
-            setStatus("Không mở được thư mục thế giới: " + safeMessage(exception), true);
+            setStatus(Component.translatable("gif_icon_world.import.status.folder_open_error", safeMessage(exception)), true);
         }
     }
 
-    private void setStatus(String value, boolean error) {
+    private void setStatus(Component value, boolean error) {
         this.status = value;
         this.statusIsError = error;
     }
