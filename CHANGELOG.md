@@ -1,5 +1,10 @@
 # Changelog
 
+## 1.2.4 - 2026-10-30
+
+### Fixed
+- Put the existing project logo at the JAR resource root and point Fabric metadata directly to `icon.png` so mod managers can find it consistently.
+
 ## 1.2.3 - 2026-10-30
 
 ### Fixed

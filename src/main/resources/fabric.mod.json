@@ -15,7 +15,7 @@
     "discord": "xuanquy192_21009"
   },
   "license": "MIT",
-  "icon": "assets/gif_icon_world/icon.png",
+  "icon": "icon.png",
   "environment": "client",
   "mixins": [
     "gif_icon_world.mixins.json"
