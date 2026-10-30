@@ -3,40 +3,39 @@
 ## 1.2.5 - 2026-10-30
 
 ### Fixed
-- Restore the original 512×512 project logo as an intact PNG in the standard Fabric resource path.
-- Find the vanilla Optimize World button using `EditWorldScreen.OPTIMIZE_BUTTON` instead of a guessed translation key.
-- Recalculate the GIF button position after each vanilla layout pass.
+- Use the project logo as the Fabric mod icon.
+- Place the GIF button below the vanilla Optimize World button and update its position when the screen layout changes.
 
 ## 1.2.4 - 2026-10-30
 
 ### Fixed
-- Put the existing project logo at the JAR resource root and point Fabric metadata directly to `icon.png` so mod managers can find it consistently.
+- Add the project logo to the JAR root and point Fabric metadata to it.
 
 ## 1.2.3 - 2026-10-30
 
 ### Fixed
-- Move the GIF Icon World button below Minecraft's Optimize World button. Its position and size come from the vanilla button.
-- Recalculate the position each time the Edit World screen opens, so the button follows the current GUI layout.
+- Position the GIF Icon World button using the Optimize World button's bounds.
+- Update the button position when the Edit World screen opens.
 
 ## 1.2.2 - 2026-10-30
 
 ### Fixed
-- Fix enum validation for GIF fit and playback settings.
-- Get the save directory with `LevelStorageAccess#getLevelPath(LevelResource.ROOT)`, as required by the Minecraft 26.3 client API.
-- Keep Gradle compiler output in the build log without triggering a second PowerShell error.
+- Validate the GIF fit and playback settings.
+- Get the save directory through `LevelStorageAccess#getLevelPath(LevelResource.ROOT)`.
+- Keep Gradle compiler output in the build log without raising a second PowerShell error.
 
 ## 1.2.1
 
-- Add the project logo to the mod metadata and repository.
-- Add separate guides for installation, GIF settings, building and development.
+- Add the project logo to the mod metadata.
+- Add installation, settings, build and development guides.
 - Add a GitHub Actions build workflow and issue templates.
-- Reformat settings and playback code without changing the editor controls.
+- Reformat settings and playback code.
 
 ## 1.2.0
 
 - Add the GIF import screen to Edit World.
 - Add file picker and drag-and-drop import.
-- Add an editor preview with speed, frame range, position, zoom, fit and playback controls.
+- Add the editor preview and animation controls.
 - Save settings for each world in `gif_icon_world.json`.
-- Find `icon.gif` automatically and fall back to `icon.png`.
+- Load `icon.gif` automatically and use `icon.png` when no GIF is available.
 - Cache decoded GIFs and check files periodically.

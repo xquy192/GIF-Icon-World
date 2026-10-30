@@ -2,41 +2,44 @@
 
 ![Logo GIF Icon World](src/main/resources/assets/gif_icon_world/icon.png)
 
-GIF Icon World là mod Fabric chạy phía client cho Minecraft Java 26.3. Mod cho phép dùng ảnh GIF động làm biểu tượng của từng thế giới trong danh sách Chơi đơn.
+GIF Icon World cho phép dùng ảnh GIF động làm biểu tượng cho từng thế giới trong danh sách Chơi đơn của Minecraft Java 26.3. Mod chạy ở phía client và dùng Fabric.
 
-Bạn có thể đặt file `icon.gif` vào thư mục save hoặc mở **Chỉnh sửa thế giới → GIF Icon World** để nhập ảnh. Mod cập nhật biểu tượng đang được Minecraft hiển thị cho thế giới đó. File `icon.png` gốc vẫn được giữ lại và sẽ được dùng khi GIF không đọc được.
+Bạn có thể đặt file `icon.gif` cạnh `level.dat` trong thư mục save. Hoặc mở **Chỉnh sửa thế giới → GIF Icon World**, chọn file GIF hoặc kéo thả ảnh vào khung. Khi lưu, mod chép ảnh vào thế giới với tên `icon.gif` và ghi thiết lập vào `gif_icon_world.json`.
 
-## Tính năng
+File `icon.png` của Minecraft vẫn được giữ nguyên. Nếu GIF bị thiếu hoặc không đọc được, biểu tượng tĩnh sẽ được dùng.
 
-- Tự tìm `icon.gif` trong thư mục của từng thế giới.
-- Nhập GIF bằng hộp thoại chọn file hoặc kéo-thả vào màn hình mod.
-- Xem trước ảnh động trước khi lưu.
-- Chỉnh tốc độ phát, frame đầu và cuối, vị trí X/Y, zoom, cách căn ảnh và chế độ phát.
-- Lưu thiết lập riêng cho từng thế giới trong `gif_icon_world.json`.
-- Kiểm tra khi file GIF hoặc file thiết lập thay đổi trong lúc danh sách thế giới đang mở.
-- Dùng lại biểu tượng tĩnh khi GIF bị thiếu hoặc không đọc được.
+## Chỉnh sửa ảnh động
+
+Trong màn hình chỉnh sửa, bạn có thể đổi tốc độ phát, chọn frame đầu và cuối, di chuyển ảnh theo trục X/Y và chỉnh zoom. Có thêm tùy chọn căn ảnh và cách phát animation.
+
+- Căn ảnh: `CONTAIN`, `COVER`, `STRETCH`
+- Chế độ phát: `LOOP`, `PING_PONG`, `ONCE`
+- Tốc độ: 0.1× đến 4.0×
+- Zoom: 0.5× đến 2.0×
+
+Khung xem trước hiển thị ảnh trước khi bạn lưu vào thế giới.
 
 ## Yêu cầu
 
 - Minecraft Java 26.3
 - Fabric Loader 0.20.1 trở lên
 - Java 25 trở lên
-- Chỉ cần cài ở client
+- Chỉ cài ở client
 
 ## Cài đặt
 
 1. Mở profile Fabric 26.3 một lần.
-2. Tải JAR trong mục Releases khi có bản phát hành, hoặc tự build từ source.
-3. Chép file JAR vào thư mục `mods` của profile.
+2. Tải file JAR trong mục Releases khi có bản phát hành, hoặc tự build từ source.
+3. Chép JAR vào thư mục `mods` của profile.
 4. Mở Minecraft và vào **Chơi đơn**.
 
-Không chép file source ZIP vào `mods`. Minecraft cần file JAR đã build. Mod không cần cài trên dedicated server.
+Minecraft cần file JAR đã build. Không chép source ZIP vào thư mục `mods`. Mod không cần cài trên dedicated server.
 
-Hướng dẫn chi tiết: [docs/INSTALLATION.md](docs/INSTALLATION.md).
+Hướng dẫn: [docs/INSTALLATION.md](docs/INSTALLATION.md).
 
-## Dùng GIF làm biểu tượng
+## Đặt GIF thủ công
 
-Mở thư mục save của thế giới rồi đặt file GIF cạnh `level.dat`, tên file là `icon.gif`:
+Mở thư mục save của thế giới rồi đặt file GIF cạnh `level.dat`. Đổi tên file thành `icon.gif`.
 
 ```text
 .minecraft/saves/TenTheGioi/
@@ -46,20 +49,20 @@ Mở thư mục save của thế giới rồi đặt file GIF cạnh `level.dat`
 └── gif_icon_world.json
 ```
 
-Bạn cũng có thể vào **Chơi đơn → chọn thế giới → Chỉnh sửa → GIF Icon World**. Chọn file GIF hoặc kéo file vào khung, chỉnh trong màn hình xem trước rồi nhấn **Lưu**. File thiết lập được tạo khi bạn lưu. Không cần xóa `icon.png`.
+Bạn không cần tự tạo `gif_icon_world.json`. File này được tạo khi lưu thiết lập trong editor.
 
 ## Thiết lập GIF
 
 | Mục | Ý nghĩa |
 | --- | --- |
-| Tốc độ | Từ 0.1× đến 4.0× |
+| Tốc độ | 0.1× đến 4.0× |
 | Frame bắt đầu/kết thúc | Chọn đoạn animation cần phát, đánh số từ 0 |
 | Vị trí X/Y | Dịch ảnh trong khung icon |
 | Zoom | Phóng to hoặc thu nhỏ ảnh |
 | Căn ảnh | Vừa khung, phủ khung hoặc kéo giãn |
 | Chế độ phát | Lặp, chạy tiến-lùi hoặc phát một lần |
 
-Ảnh hiển thị được kết xuất về khung 64×64 pixel. GIF đầu vào có thể dùng độ phân giải khác nhau, trong giới hạn đọc file của mod. Các giới hạn và tùy chọn được ghi trong [docs/SETTINGS.md](docs/SETTINGS.md).
+Ảnh trên world list được kết xuất về khung 64×64 pixel. GIF đầu vào có thể có độ phân giải khác nhau, trong giới hạn đọc file của mod. Xem [docs/SETTINGS.md](docs/SETTINGS.md) để biết giới hạn và định dạng file thiết lập.
 
 ## Build
 
@@ -71,15 +74,15 @@ Build thủ công cần JDK 25 và Gradle 9.8.2:
 gradle --no-daemon clean build
 ```
 
-Xem [docs/BUILDING.md](docs/BUILDING.md) và [docs/DEVELOPMENT.md](docs/DEVELOPMENT.md).
+Hướng dẫn nằm trong [docs/BUILDING.md](docs/BUILDING.md).
 
-## Dự án và liên hệ
+## Liên kết
 
-- Mã nguồn: [GIF Icon World](https://github.com/xquy192/GIF-Icon-World)
-- GitHub: [xquy192](https://github.com/xquy192)
+- Mã nguồn: https://github.com/xquy192/GIF-Icon-World
+- Báo lỗi: https://github.com/xquy192/GIF-Icon-World/issues
 - Discord: `xuanquy192_21009`
 - Email: [dinhxuanquy192@gmail.com](mailto:dinhxuanquy192@gmail.com)
 
 ## Giấy phép
 
-[MIT](LICENSE).
+[MIT](LICENSE)

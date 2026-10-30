@@ -2,30 +2,34 @@
 
 ![GIF Icon World](src/main/resources/assets/gif_icon_world/icon.png)
 
-GIF Icon World is a client-side Fabric mod for Minecraft Java 26.3. It lets each singleplayer save use an animated GIF in the world list.
+GIF Icon World adds animated GIF icons to the Singleplayer world list in Minecraft Java 26.3. It is a client-side Fabric mod.
 
-Put a file named `icon.gif` in a world's save folder, or open **Edit World → GIF Icon World** to import one. The mod updates the icon Minecraft already displays for that save. The original `icon.png` stays in place and is used when the GIF cannot be loaded.
+Place a file named `icon.gif` beside `level.dat` in a world's save folder. You can also open **Edit World → GIF Icon World** and import a GIF there. The editor saves the image as `icon.gif` and writes its settings to `gif_icon_world.json`.
 
-## What it does
+Minecraft's regular `icon.png` stays in the save folder. The mod uses it when no readable GIF is available.
 
-- Checks each save folder for `icon.gif`.
-- Imports GIFs through the file picker or drag-and-drop.
-- Shows a preview before saving.
-- Lets you change playback speed, frame range, X/Y position, zoom, fit mode and playback mode.
-- Stores settings for each world in `gif_icon_world.json`.
-- Checks for changed GIF and settings files while the world list is open.
-- Falls back to the static world icon if a GIF is missing or cannot be read.
+## Editor controls
+
+You can change the playback speed, choose the first and last frames, move the image, and adjust its zoom. The editor also has fit and playback modes.
+
+- Fit: `CONTAIN`, `COVER`, `STRETCH`
+- Playback: `LOOP`, `PING_PONG`, `ONCE`
+- Speed: 0.1× to 4.0×
+- Position: X and Y offsets
+- Zoom: 0.5× to 2.0×
+
+The preview shows the GIF before you save it.
 
 ## Requirements
 
 - Minecraft Java 26.3
 - Fabric Loader 0.20.1 or newer
 - Java 25 or newer
-- Client side only
+- Client installation
 
 ## Build
 
-On Windows, run `build.bat` from the project folder. It checks for Java and Gradle and runs a clean build. The JAR is written to `build/libs/`.
+On Windows, run `build.bat`. It checks for Java and Gradle, then runs a clean build. The JAR is placed in `build/libs/`.
 
 For a manual build, use JDK 25 and Gradle 9.8.2:
 
@@ -33,7 +37,7 @@ For a manual build, use JDK 25 and Gradle 9.8.2:
 gradle --no-daemon clean build
 ```
 
-See [docs/BUILDING.md](docs/BUILDING.md) for setup details.
+See [docs/BUILDING.md](docs/BUILDING.md) for details.
 
 ## Documentation
 
@@ -41,14 +45,13 @@ See [docs/BUILDING.md](docs/BUILDING.md) for setup details.
 - [Installation](docs/INSTALLATION.md)
 - [GIF settings](docs/SETTINGS.md)
 - [Development notes](docs/DEVELOPMENT.md)
-- [Build instructions](docs/BUILDING.md)
 - [Changelog](CHANGELOG.md)
 - [Contributing](CONTRIBUTING.md)
 
-## Project and contact
+## Links
 
-- Project: [GIF Icon World](https://github.com/xquy192/GIF-Icon-World)
-- GitHub: [xquy192](https://github.com/xquy192)
+- Source: https://github.com/xquy192/GIF-Icon-World
+- Issues: https://github.com/xquy192/GIF-Icon-World/issues
 - Discord: `xuanquy192_21009`
 - Email: [dinhxuanquy192@gmail.com](mailto:dinhxuanquy192@gmail.com)
 

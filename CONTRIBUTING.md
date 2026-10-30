@@ -1,34 +1,21 @@
 # Contributing
 
-## Bug reports
+## Reporting a bug
 
-Open a GitHub Issue and include:
+Open a GitHub issue with the Minecraft version, Fabric Loader version, mod version, operating system and steps to reproduce the problem. Include the relevant lines from `latest.log`.
 
-- Minecraft version
-- Fabric Loader version
-- GIF Icon World version
-- Operating system
-- Steps to reproduce the problem
-- Relevant lines from `latest.log`
-
-For GIF-related problems, attach a small file that reproduces the issue when possible. Remove personal file paths and other private information from logs before posting them.
+For GIF-related bugs, attach a small file that reproduces the problem if possible. Remove personal paths and other private information from logs first.
 
 ## Code changes
 
-- Keep the mod client-side unless a change requires otherwise.
-- Keep GIF decoding, settings, cache handling and screen code in their current packages where possible.
-- Do not add a dependency for something Java or Minecraft already provides.
-- Keep the GIF input limits when changing the decoder.
-- Check the Minecraft 26.3 method and field signatures before changing a mixin.
-- Use the existing Vietnamese terms in the in-game interface.
-- Keep comments focused on decisions that are not obvious from the code.
+Keep client code in the client source set. Check the Minecraft 26.3 signatures before changing a mixin. Reuse the existing GIF limits and Vietnamese labels. Avoid adding a dependency when Java or Minecraft already provides what the code needs.
 
 ## Build and test
 
-On Windows, run `build.bat`. For a manual build, use JDK 25 and Gradle 9.8.2:
+On Windows, run `build.bat`. To build manually, use JDK 25 and Gradle 9.8.2:
 
 ```sh
 gradle --no-daemon clean build
 ```
 
-After the build, follow the in-game checks in [docs/DEVELOPMENT.md](docs/DEVELOPMENT.md). A successful compile does not confirm that the mod works in-game.
+After building, run through the checks in [docs/DEVELOPMENT.md](docs/DEVELOPMENT.md). A successful compile does not confirm that the mod works in-game.
