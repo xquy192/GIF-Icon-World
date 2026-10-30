@@ -9,13 +9,13 @@ import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
 
 import java.awt.EventQueue;
+import java.awt.FileDialog;
+import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.List;
 import java.util.Locale;
-import javax.swing.JFileChooser;
-import javax.swing.filechooser.FileNameExtensionFilter;
 
 public final class GifIconImportScreen extends Screen {
     private static final long MAX_GIF_BYTES = 64L * 1024L * 1024L;
@@ -24,10 +24,31 @@ public final class GifIconImportScreen extends Screen {
     private final Path worldDirectory;
     private Component status = Component.translatable("gif_icon_world.import.status.initial");
     private boolean statusIsError;
+
+    private int scale = 1;
     private int cardLeft;
     private int cardWidth;
+    private int panelTop;
+    private int panelBottom;
+    private int dropLeft;
+    private int dropRight;
     private int dropTop;
     private int dropBottom;
+    private int buttonsY;
+    private int buttonWidth;
+    private int buttonHeight;
+    private int buttonGap;
+    private int firstButtonX;
+    private int secondButtonX;
+    private int editButtonY;
+    private int footerY;
+    private int footerWidth;
+    private int currentInfoY;
+    private int pathInfoY;
+    private int statusY;
+    private int lineGap;
+    private boolean buttonsSideBySide;
+    private boolean hasCurrentGif;
 
     public GifIconImportScreen(Screen parent, Path worldDirectory) {
         super(Component.translatable("gif_icon_world.title"));
@@ -40,47 +61,92 @@ public final class GifIconImportScreen extends Screen {
         computeLayout();
         this.addRenderableOnly((graphics, mouseX, mouseY, partialTick) -> drawPanel(graphics));
 
-        int center = this.width / 2;
-        int buttonsY = Math.min(this.height - 110, this.dropBottom + 9);
         this.addRenderableWidget(
                 Button.builder(Component.translatable("gif_icon_world.import.button.choose"), button -> chooseFile())
-                        .bounds(center - 205, buttonsY, 200, 20)
-                        .build()
-        );
-        this.addRenderableWidget(
-                Button.builder(Component.translatable("gif_icon_world.import.button.open_folder"), button -> openWorldFolder())
-                        .bounds(center + 5, buttonsY, 200, 20)
+                        .bounds(firstButtonX, buttonsY, buttonWidth, buttonHeight)
                         .build()
         );
 
-        Path currentGif = worldDirectory.resolve("icon.gif");
-        if (Files.isRegularFile(currentGif)) {
+        int openFolderY = buttonsSideBySide ? buttonsY : buttonsY + buttonHeight + buttonGap;
+        this.addRenderableWidget(
+                Button.builder(Component.translatable("gif_icon_world.import.button.open_folder"), button -> openWorldFolder())
+                        .bounds(secondButtonX, openFolderY, buttonWidth, buttonHeight)
+                        .build()
+        );
+
+        if (hasCurrentGif) {
             this.addRenderableWidget(
-                    Button.builder(Component.translatable("gif_icon_world.import.button.edit_current"), button -> openEditor(currentGif))
-                            .bounds(center - 205, buttonsY + 26, 410, 20)
+                    Button.builder(Component.translatable("gif_icon_world.import.button.edit_current"), button -> openEditor(worldDirectory.resolve("icon.gif")))
+                            .bounds(cardLeft + scaled(14), editButtonY, cardWidth - scaled(28), buttonHeight)
                             .build()
             );
         }
+
         this.addRenderableWidget(
                 Button.builder(Component.translatable("gif_icon_world.import.button.back"), button -> this.minecraft.gui.setScreen(parent))
-                        .bounds(center - 100, this.height - 28, 200, 20)
+                        .bounds((this.width - footerWidth) / 2, footerY, footerWidth, buttonHeight)
                         .build()
         );
     }
 
     private void computeLayout() {
-        this.cardWidth = Math.min(440, this.width - 32);
+        float factor = Math.min(this.width / 640.0f, this.height / 360.0f);
+        this.scale = Math.max(1, Math.round(Math.max(0.62f, Math.min(1.15f, factor)) * 100.0f));
+
+        int horizontalMargin = scaled(18);
+        this.cardWidth = Math.max(1, Math.min(this.width - horizontalMargin * 2, scaled(520)));
         this.cardLeft = (this.width - this.cardWidth) / 2;
-        int panelTop = 50;
-        int panelBottom = this.height - 43;
-        this.dropTop = panelTop + 32;
-        this.dropBottom = Math.min(panelBottom - 126, this.dropTop + 110);
+        this.panelTop = scaled(44);
+        this.panelBottom = Math.max(this.panelTop + scaled(100), this.height - scaled(39));
+
+        int innerPadding = scaled(14);
+        this.dropLeft = this.cardLeft + innerPadding;
+        this.dropRight = this.cardLeft + this.cardWidth - innerPadding;
+        this.dropTop = this.panelTop + scaled(36);
+
+        this.buttonHeight = Math.max(16, scaled(20));
+        this.buttonGap = scaled(6);
+        this.buttonsSideBySide = this.cardWidth >= scaled(390);
+        this.hasCurrentGif = Files.isRegularFile(worldDirectory.resolve("icon.gif"));
+        this.lineGap = Math.max(10, scaled(13));
+
+        this.statusY = this.panelBottom - scaled(12);
+        this.pathInfoY = this.statusY - this.lineGap;
+        this.currentInfoY = this.pathInfoY - this.lineGap;
+
+        int rows = buttonsSideBySide ? (hasCurrentGif ? 2 : 1) : (hasCurrentGif ? 3 : 2);
+        int buttonBlockHeight = rows * this.buttonHeight + Math.max(0, rows - 1) * this.buttonGap;
+        this.buttonsY = this.currentInfoY - scaled(10) - buttonBlockHeight;
+
+        int contentWidth = Math.max(1, this.cardWidth - innerPadding * 2);
+        if (buttonsSideBySide) {
+            this.buttonWidth = Math.max(1, (contentWidth - this.buttonGap) / 2);
+            this.firstButtonX = this.cardLeft + innerPadding;
+            this.secondButtonX = this.firstButtonX + this.buttonWidth + this.buttonGap;
+            this.editButtonY = this.buttonsY + this.buttonHeight + this.buttonGap;
+        } else {
+            this.buttonWidth = contentWidth;
+            this.firstButtonX = this.cardLeft + innerPadding;
+            this.secondButtonX = this.firstButtonX;
+            this.editButtonY = this.buttonsY + this.buttonHeight * 2 + this.buttonGap * 2;
+        }
+
+        this.dropBottom = Math.max(this.dropTop + scaled(28), this.buttonsY - scaled(9));
+        int maxDropBottom = this.panelBottom - scaled(76);
+        if (this.dropBottom > maxDropBottom) {
+            this.dropBottom = Math.max(this.dropTop + scaled(24), maxDropBottom);
+        }
+
+        this.footerY = this.height - scaled(28);
+        this.footerWidth = Math.min(scaled(200), Math.max(1, this.width - scaled(24)));
+    }
+
+    private int scaled(int value) {
+        return Math.max(1, Math.round(value * this.scale / 100.0f));
     }
 
     private void drawPanel(GuiGraphicsExtractor graphics) {
         computeLayout();
-        int panelTop = 50;
-        int panelBottom = this.height - 43;
 
         graphics.fill(cardLeft, panelTop, cardLeft + cardWidth, panelBottom, 0x92000000);
         graphics.fill(cardLeft, panelTop, cardLeft + 1, panelBottom, 0xFF454545);
@@ -88,8 +154,6 @@ public final class GifIconImportScreen extends Screen {
         graphics.fill(cardLeft, panelTop, cardLeft + cardWidth, panelTop + 1, 0xFF454545);
         graphics.fill(cardLeft, panelBottom - 1, cardLeft + cardWidth, panelBottom, 0xFF454545);
 
-        int dropLeft = cardLeft + 18;
-        int dropRight = cardLeft + cardWidth - 18;
         graphics.fill(dropLeft, dropTop, dropRight, dropBottom, 0x66000000);
         graphics.fill(dropLeft, dropTop, dropRight, dropTop + 1, 0xFF777777);
         graphics.fill(dropLeft, dropBottom - 1, dropRight, dropBottom, 0xFF777777);
@@ -105,21 +169,22 @@ public final class GifIconImportScreen extends Screen {
             float partialTick
     ) {
         super.extractRenderState(graphics, mouseX, mouseY, partialTick);
-        graphics.centeredText(this.font, Component.translatable("gif_icon_world.title"), this.width / 2, 18, 0xFFFFFFFF);
+        graphics.centeredText(this.font, Component.translatable("gif_icon_world.title"), this.width / 2, scaled(18), 0xFFFFFFFF);
         graphics.centeredText(
                 this.font,
                 Component.translatable("gif_icon_world.import.subtitle"),
                 this.width / 2,
-                31,
+                scaled(31),
                 0xFFBFBFBF
         );
 
         int dropCenter = (dropTop + dropBottom) / 2;
+        int textGap = scaled(14);
         graphics.centeredText(
                 this.font,
                 Component.translatable("gif_icon_world.import.drop"),
                 this.width / 2,
-                dropCenter - 17,
+                dropCenter - textGap,
                 0xFFFFFFFF
         );
         graphics.centeredText(
@@ -133,23 +198,31 @@ public final class GifIconImportScreen extends Screen {
                 this.font,
                 Component.translatable("gif_icon_world.import.detect"),
                 this.width / 2,
-                dropCenter + 17,
+                dropCenter + textGap,
                 0xFFB0B0B0
         );
 
-        Component current = Files.isRegularFile(worldDirectory.resolve("icon.gif"))
+        Component current = hasCurrentGif
                 ? Component.translatable("gif_icon_world.import.current_exists")
                 : Component.translatable("gif_icon_world.import.current_missing");
-        graphics.text(this.font, current, cardLeft + 14, this.height - 91, 0xFFE0E0E0);
+        int textLeft = cardLeft + scaled(14);
+        graphics.text(this.font, current, textLeft, currentInfoY, 0xFFE0E0E0);
 
         String pathText = worldDirectory.toString();
-        if (pathText.length() > 44) {
-            pathText = "…" + pathText.substring(pathText.length() - 43);
+        int availablePathWidth = Math.max(20, cardWidth - scaled(28) - this.font.width("Folder: "));
+        while (!pathText.isEmpty() && this.font.width(pathText) > availablePathWidth) {
+            pathText = "…" + pathText.substring(1);
         }
-        graphics.text(this.font, Component.translatable("gif_icon_world.import.world_path", pathText), cardLeft + 14, this.height - 77, 0xFFB0B0B0);
+        graphics.text(
+                this.font,
+                Component.translatable("gif_icon_world.import.world_path", pathText),
+                textLeft,
+                pathInfoY,
+                0xFFB0B0B0
+        );
 
         int statusColor = statusIsError ? 0xFFFF6B6B : 0xFFFFD866;
-        graphics.text(this.font, status, cardLeft + 14, this.height - 60, statusColor);
+        graphics.text(this.font, status, textLeft, statusY, statusColor);
     }
 
     @Override
@@ -169,23 +242,27 @@ public final class GifIconImportScreen extends Screen {
 
     private void chooseFile() {
         EventQueue.invokeLater(() -> {
-            Path selected;
+            Path selected = null;
             try {
-                JFileChooser chooser = new JFileChooser(
-                        Files.isDirectory(worldDirectory) ? worldDirectory.toFile() : null
+                FileDialog dialog = new FileDialog(
+                        (java.awt.Frame) null,
+                        Component.translatable("gif_icon_world.import.dialog.title").getString(),
+                        FileDialog.LOAD
                 );
-                chooser.setDialogTitle(Component.translatable("gif_icon_world.import.dialog.title").getString());
-                chooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
-                chooser.setMultiSelectionEnabled(false);
-                chooser.setAcceptAllFileFilterUsed(false);
-                chooser.setFileFilter(new FileNameExtensionFilter(Component.translatable("gif_icon_world.import.dialog.filter").getString(), "gif"));
-
-                if (chooser.showOpenDialog(null) == JFileChooser.APPROVE_OPTION
-                        && chooser.getSelectedFile() != null) {
-                    selected = chooser.getSelectedFile().toPath();
-                } else {
-                    selected = null;
+                if (Files.isDirectory(worldDirectory)) {
+                    dialog.setDirectory(worldDirectory.toString());
                 }
+                dialog.setFile("*.gif");
+                dialog.setFilenameFilter((directory, name) ->
+                        name.toLowerCase(Locale.ROOT).endsWith(".gif"));
+                dialog.setVisible(true);
+
+                String selectedName = dialog.getFile();
+                String selectedDirectory = dialog.getDirectory();
+                if (selectedName != null && selectedDirectory != null) {
+                    selected = new File(selectedDirectory, selectedName).toPath();
+                }
+                dialog.dispose();
             } catch (RuntimeException exception) {
                 String message = safeMessage(exception);
                 Minecraft.getInstance().execute(() ->
