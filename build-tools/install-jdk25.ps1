@@ -1,4 +1,3 @@
-# Install an Eclipse Temurin JDK 25 for the current Windows user.
 $ErrorActionPreference = 'Stop'
 $ProgressPreference = 'SilentlyContinue'
 [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12

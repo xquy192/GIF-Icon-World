@@ -1,5 +1,4 @@
 param([Parameter(Mandatory = $false)][string]$ManualPath)
-# Find a complete JDK 25+ and print only its root folder.
 $ErrorActionPreference = 'SilentlyContinue'
 $candidates = New-Object 'System.Collections.Generic.List[string]'
 

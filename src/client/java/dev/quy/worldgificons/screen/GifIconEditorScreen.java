@@ -18,7 +18,6 @@ import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
 import java.util.Locale;
 
-/** Live preview and per-world animation controls, arranged to match vanilla Minecraft menus. */
 public final class GifIconEditorScreen extends Screen {
     private final Screen parent;
     private final Path worldDirectory;

@@ -210,8 +210,7 @@ public final class GifAnimation {
         return start;
     }
 
-    /** Render one animation frame into Minecraft's fixed-size world icon canvas. */
-    public BufferedImage renderFrame(int index, GifIconSettings settings) {
+        public BufferedImage renderFrame(int index, GifIconSettings settings) {
         BufferedImage source = sourceFrame(index);
         BufferedImage result = new BufferedImage(ICON_SIZE, ICON_SIZE, BufferedImage.TYPE_INT_ARGB);
         Graphics2D graphics = result.createGraphics();

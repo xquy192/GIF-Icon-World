@@ -14,7 +14,6 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.WeakHashMap;
 
-/** Client-side playback/cache for world-local icon.gif files. */
 public final class WorldGifIconManager {
     private static final Logger LOGGER = LoggerFactory.getLogger("GIF Icon World");
     private static final long FILE_CHECK_INTERVAL_MS = 1000L;

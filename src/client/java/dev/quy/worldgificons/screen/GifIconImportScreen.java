@@ -18,7 +18,6 @@ import java.nio.file.Path;
 import java.util.List;
 import java.util.Locale;
 
-/** Handles GIF selection and opens the per-world animation editor. */
 public final class GifIconImportScreen extends Screen {
     private static final long MAX_GIF_BYTES = 64L * 1024L * 1024L;
 

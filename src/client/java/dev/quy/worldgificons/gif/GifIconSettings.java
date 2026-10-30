@@ -10,7 +10,6 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
 
-/** Settings that belong to one world save. */
 public final class GifIconSettings {
     public static final String CONFIG_FILE = "gif_icon_world.json";
 
