@@ -35,7 +35,7 @@ public abstract class EditWorldScreenMixin extends Screen {
         Path worldDirectory = this.levelAccess.getLevelPath(LevelResource.ROOT);
         this.gificonworld$gifIconButton = this.addRenderableWidget(
                 Button.builder(Component.literal("GIF Icon World"), button ->
-                                Minecraft.getInstance().setScreen(
+                                Minecraft.getInstance().gui.setScreen(
                                         new GifIconImportScreen((Screen) (Object) this, worldDirectory)))
                         .bounds(0, 0, 1, 1)
                         .build()
