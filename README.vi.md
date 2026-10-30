@@ -73,8 +73,9 @@ gradle --no-daemon clean build
 
 Xem [docs/BUILDING.md](docs/BUILDING.md) và [docs/DEVELOPMENT.md](docs/DEVELOPMENT.md).
 
-## Liên hệ
+## Dự án và liên hệ
 
+- Mã nguồn: [GIF Icon World](https://github.com/xquy192/GIF-Icon-World)
 - GitHub: [xquy192](https://github.com/xquy192)
 - Discord: `xuanquy192_21009`
 - Email: [dinhxuanquy192@gmail.com](mailto:dinhxuanquy192@gmail.com)

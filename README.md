@@ -45,8 +45,9 @@ See [docs/BUILDING.md](docs/BUILDING.md) for setup details.
 - [Changelog](CHANGELOG.md)
 - [Contributing](CONTRIBUTING.md)
 
-## Contact
+## Project and contact
 
+- Project: [GIF Icon World](https://github.com/xquy192/GIF-Icon-World)
 - GitHub: [xquy192](https://github.com/xquy192)
 - Discord: `xuanquy192_21009`
 - Email: [dinhxuanquy192@gmail.com](mailto:dinhxuanquy192@gmail.com)
