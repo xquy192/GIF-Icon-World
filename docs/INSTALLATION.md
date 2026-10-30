@@ -17,6 +17,10 @@ You need:
 
 Use the built JAR. The source ZIP cannot be loaded as a mod. GIF Icon World runs on the client, so it is not needed on a dedicated server.
 
+## Language
+
+The mod uses Minecraft's selected language when a matching translation is available. It currently includes English, Vietnamese, Spanish, French, German, Brazilian Portuguese, Russian, Simplified Chinese, Japanese and Korean.
+
 ## Add a GIF manually
 
 Open the world's save folder and place the GIF beside `level.dat`. Name it `icon.gif`.

@@ -3,7 +3,7 @@
 ## 1.2.7 - 2026-10-30
 
 ### Added
-- Add translations for 16 Minecraft languages.
+- Add translations for 10 Minecraft languages.
 
 ### Fixed
 - Use `JAVA_HOME` when the build helper runs from another folder.

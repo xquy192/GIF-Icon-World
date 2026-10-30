@@ -243,7 +243,8 @@ public final class GifIconImportScreen extends Screen {
     private void openWorldFolder() {
         try {
             if (!Files.isDirectory(worldDirectory)) {
-                throw new IOException("Không tìm thấy thư mục save của thế giới.");
+                setStatus(Component.translatable("gif_icon_world.import.error.world_folder_missing"), true);
+                return;
             }
 
             String osName = System.getProperty("os.name", "").toLowerCase(Locale.ROOT);

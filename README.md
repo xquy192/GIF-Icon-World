@@ -20,6 +20,10 @@ You can change the playback speed, choose the first and last frames, move the im
 
 The preview shows the GIF before you save it.
 
+## Languages
+
+The interface follows the language selected in Minecraft. Translation files are included for English, Vietnamese, Spanish, French, German, Brazilian Portuguese, Russian, Simplified Chinese, Japanese and Korean.
+
 ## Requirements
 
 - Minecraft Java 26.3

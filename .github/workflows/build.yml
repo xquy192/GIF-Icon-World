@@ -28,6 +28,29 @@ jobs:
           gradle-version: '9.8.2'
       - name: Build mod
         run: gradle --no-daemon clean build
+      - name: Validate language files
+        shell: bash
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+
+          folder = Path("src/main/resources/assets/gif_icon_world/lang")
+          files = sorted(folder.glob("*.json"))
+          if not files:
+              raise SystemExit("No language files found")
+
+          reference = json.loads((folder / "en_us.json").read_text(encoding="utf-8"))
+          expected = set(reference)
+          for path in files:
+              entries = json.loads(path.read_text(encoding="utf-8"))
+              if set(entries) != expected:
+                  raise SystemExit(f"{path.name}: translation keys do not match en_us.json")
+              if not all(isinstance(value, str) for value in entries.values()):
+                  raise SystemExit(f"{path.name}: translation values must be strings")
+
+          print(f"Validated {len(files)} language files with {len(expected)} keys each")
+          PY
       - name: Verify the icon inside the mod JAR
         shell: bash
         run: |

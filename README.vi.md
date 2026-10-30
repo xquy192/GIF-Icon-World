@@ -19,6 +19,10 @@ Trong màn hình chỉnh sửa, bạn có thể đổi tốc độ phát, chọn
 
 Khung xem trước hiển thị ảnh trước khi bạn lưu vào thế giới.
 
+## Ngôn ngữ
+
+Giao diện tự dùng ngôn ngữ đang chọn trong Minecraft. Hiện có bản dịch tiếng Anh, Việt, Tây Ban Nha, Pháp, Đức, Bồ Đào Nha (Brazil), Nga, Trung giản thể, Nhật và Hàn.
+
 ## Yêu cầu
 
 - Minecraft Java 26.3

@@ -381,13 +381,13 @@ public final class GifIconEditorScreen extends Screen {
 
     private void refreshModeButtonMessages() {
         if (this.fitModeButton != null) {
-            this.fitModeButton.setMessage(Component.literal(fitModeLabel(settings.getFitMode())));
+            this.fitModeButton.setMessage(fitModeLabel(settings.getFitMode()));
         }
         if (this.playbackModeButton != null) {
-            this.playbackModeButton.setMessage(Component.literal(playbackLabel(settings.getPlaybackMode())));
+            this.playbackModeButton.setMessage(playbackLabel(settings.getPlaybackMode()));
         }
         if (this.previewToggleButton != null) {
-            this.previewToggleButton.setMessage(Component.literal(previewPaused ? "Tiếp tục" : "Tạm dừng"));
+            this.previewToggleButton.setMessage(Component.translatable(previewPaused ? "gif_icon_world.editor.button.play" : "gif_icon_world.editor.button.pause"));
         }
     }
 
