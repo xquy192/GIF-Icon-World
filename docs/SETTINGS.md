@@ -1,6 +1,6 @@
-# GIF files and world settings
+# GIF files and settings
 
-Each world stores its GIF and settings in its save folder, beside `level.dat` and Minecraft's usual `icon.png`.
+Each world's GIF and settings are stored beside `level.dat` and Minecraft's `icon.png`.
 
 ```text
 <world folder>/
@@ -20,11 +20,11 @@ Each world stores its GIF and settings in its save folder, beside `level.dat` an
 | Maximum frame count | 300 |
 | Maximum stored frame side | 128 pixels |
 
-The displayed icon is rendered onto a 64×64 canvas. `CONTAIN` keeps the whole image visible. `COVER` fills the square and may crop the edges. `STRETCH` fills the square without keeping the original aspect ratio. Frame delays shorter than 20 ms are treated as 20 ms.
+The world-list icon is drawn on a 64×64 canvas. `CONTAIN` shows the full image. `COVER` fills the square and can crop the edges. `STRETCH` fills the square without keeping the image's aspect ratio. Frame delays below 20 ms are treated as 20 ms.
 
 ## Settings file
 
-The file `gif_icon_world.json` is created when you save from the editor. It can also be edited by hand while Minecraft is closed.
+The editor creates `gif_icon_world.json` when you save. You can edit it by hand while Minecraft is closed.
 
 Example:
 
@@ -43,20 +43,20 @@ Example:
 
 | Key | Allowed values | Default |
 | --- | --- | --- |
-| `speed` | 0.1–4.0 | `1.0` |
+| `speed` | 0.1-4.0 | `1.0` |
 | `startFrame` | 0 to the last frame | `0` |
 | `endFrame` | Start frame to the last frame | Last frame |
 | `offsetX`, `offsetY` | -32 to 32 pixels | `0` |
-| `zoom` | 0.5–2.0 | `1.0` |
+| `zoom` | 0.5-2.0 | `1.0` |
 | `fitMode` | `CONTAIN`, `COVER`, `STRETCH` | `CONTAIN` |
 | `playbackMode` | `LOOP`, `PING_PONG`, `ONCE` | `LOOP` |
 
-Frame numbers start at zero. The start and end frames are both included. Values outside the allowed range are clamped. If the settings file is missing or cannot be read, the mod uses the defaults.
+Frame numbers start at zero. The selected start and end frames are both played. Values outside the allowed range are clamped. If the settings file is missing or unreadable, the mod uses the defaults.
 
 ## Playback modes
 
-- `LOOP`: starts again at the first selected frame after reaching the last.
-- `PING_PONG`: plays forward, then backward through the selected frames.
-- `ONCE`: plays the selected range once and holds on the last frame.
+- `LOOP` plays the selected frames from start to end, then starts again.
+- `PING_PONG` plays forward and then backward.
+- `ONCE` plays the selected range once and holds on the last frame.
 
-The world list checks the settings file's timestamp and size periodically. If you edit the JSON while Minecraft is running, the new values are loaded when the file is checked again.
+The world list checks the settings file's timestamp and size periodically. Changes made while Minecraft is running are picked up when the file is checked again.

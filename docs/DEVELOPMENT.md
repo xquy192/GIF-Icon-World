@@ -1,49 +1,44 @@
-# Development notes
+# Development
 
-GIF Icon World runs on the Minecraft client. The source is split by feature.
+All game code runs on the client. The source is split into three packages.
 
-## Source files
+## Source layout
 
-| File | What it contains |
+| File | Purpose |
 | --- | --- |
-| `gif/GifAnimation.java` | Reads GIF frames, applies disposal rules and renders frames to the world icon. |
-| `gif/GifIconSettings.java` | Loads, validates and saves settings for a world. |
-| `gif/WorldGifIconManager.java` | Keeps decoded GIFs and playback state, then uploads changed frames. |
-| `mixin/EditWorldScreenMixin.java` | Adds the GIF editor button to Edit World. |
-| `mixin/WorldListEntryMixin.java` | Updates the existing world icon before Minecraft draws the row. |
-| `screen/GifIconImportScreen.java` | Handles file selection, drag-and-drop and opening the save folder. |
-| `screen/GifIconEditorScreen.java` | Displays the preview and editing controls. |
+| `gif/GifAnimation.java` | Reads GIF frames, handles disposal methods and renders a frame. |
+| `gif/GifIconSettings.java` | Reads and writes a world's GIF settings. |
+| `gif/WorldGifIconManager.java` | Caches decoded GIFs and updates the world icon texture. |
+| `mixin/EditWorldScreenMixin.java` | Adds the GIF button to Edit World. |
+| `mixin/WorldListEntryMixin.java` | Updates the icon used by each world-list row. |
+| `screen/GifIconImportScreen.java` | Imports a GIF or opens the world folder. |
+| `screen/GifIconEditorScreen.java` | Shows the GIF preview and editing controls. |
 
-## What happens in-game
+## World-list update
 
-1. The world-list mixin gets the save folder and Minecraft's existing `FaviconTexture`.
-2. The manager checks for `icon.gif` and `gif_icon_world.json`.
-3. When the GIF changes, the manager decodes it and composites its frames.
-4. Playback settings determine which frame should be shown.
-5. The manager uploads a frame only when the displayed frame changes.
-6. If no usable GIF is available, the static world icon is restored or left unchanged.
+When Minecraft draws a world-list row, the mixin gets that world's save folder and passes its `icon.gif` path and vanilla `FaviconTexture` to the manager.
 
-The editor uses its own preview texture. When you save, it copies the selected GIF and settings into the save folder, then clears the manager's cached entries for that world.
+The manager checks the GIF and `gif_icon_world.json`. It decodes the animation when the file changes, then uploads a frame when playback advances. File timestamps and sizes are checked once per second. The GIF is not decoded on every render call.
 
-## Implementation notes
+If the GIF is missing or cannot be read, the manager restores the regular world icon. When a row closes, its playback entry is released.
 
-- The mod updates Minecraft's existing favicon texture. It does not draw a second image over the world row.
-- Cache keys use normalized save paths, so each world has its own GIF and settings.
-- The manager checks file timestamps and sizes once per second. It does not decode the GIF on every render call.
-- GIF file size, image dimensions and frame count are limited.
-- The mod does not use server networking or migrate world data.
+## Saving from the editor
 
-## Changing a mixin
+The editor has a separate preview texture. On save, it copies the selected file to the world's save folder as `icon.gif`, writes `gif_icon_world.json` and clears the cached entries for that world.
 
-World-selection classes can change between Minecraft versions. Check the Minecraft 26.3 signatures before changing an injection point or shadowed field. After a mixin change, test both the world list and Edit World screen in-game.
+The mod changes the favicon texture used by Minecraft's world row. It does not draw another image on top of the row. It does not use server networking or change world data.
+
+## Mixins
+
+World-selection classes can change between Minecraft releases. Check the 26.3 signatures before changing a target method or shadowed field. After changing a mixin, open both the world list and Edit World in-game.
 
 ## In-game checks
 
 - Start a Fabric 26.3 client with the mod.
 - Open a world that has only `icon.png`.
-- Add `icon.gif` and check that it animates while the PNG remains in the folder.
-- Import a different GIF through **Edit World → GIF Icon World**.
-- Try each fit and playback mode.
+- Add `icon.gif` and check the animation in the world list.
+- Import another GIF through **Edit World → GIF Icon World**.
+- Try the fit and playback modes.
 - Save, return to the world list and open the editor again.
-- Remove or corrupt `icon.gif` and check that the static icon is still available.
-- Check `latest.log` for GIF decoding or texture upload errors.
+- Remove or corrupt `icon.gif` and check the static icon.
+- Check `latest.log` if GIF decoding or texture upload fails.
