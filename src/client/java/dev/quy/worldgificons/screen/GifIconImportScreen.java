@@ -209,13 +209,19 @@ public final class GifIconImportScreen extends Screen {
         graphics.text(this.font, current, textLeft, currentInfoY, 0xFFE0E0E0);
 
         String pathText = worldDirectory.toString();
-        int availablePathWidth = Math.max(20, cardWidth - scaled(28) - this.font.width("Folder: "));
-        while (!pathText.isEmpty() && this.font.width(pathText) > availablePathWidth) {
-            pathText = "…" + pathText.substring(1);
+        int availablePathWidth = Math.max(20, cardWidth - scaled(28));
+        Component pathComponent = Component.translatable("gif_icon_world.import.world_path", pathText);
+        if (this.font.width(pathComponent) > availablePathWidth) {
+            do {
+                if (!pathText.isEmpty()) {
+                    pathText = pathText.substring(1);
+                }
+                pathComponent = Component.translatable("gif_icon_world.import.world_path", "…" + pathText);
+            } while (!pathText.isEmpty() && this.font.width(pathComponent) > availablePathWidth);
         }
         graphics.text(
                 this.font,
-                Component.translatable("gif_icon_world.import.world_path", pathText),
+                pathComponent,
                 textLeft,
                 pathInfoY,
                 0xFFB0B0B0
