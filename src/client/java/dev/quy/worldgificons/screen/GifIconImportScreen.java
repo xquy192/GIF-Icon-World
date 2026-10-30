@@ -8,10 +8,8 @@ import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
 
-import java.awt.EventQueue;
-import java.awt.FileDialog;
-import java.io.File;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.List;
@@ -247,45 +245,144 @@ public final class GifIconImportScreen extends Screen {
     }
 
     private void chooseFile() {
-        EventQueue.invokeLater(() -> {
-            Path selected = null;
+        Thread pickerThread = new Thread(() -> {
             try {
-                FileDialog dialog = new FileDialog(
-                        (java.awt.Frame) null,
-                        Component.translatable("gif_icon_world.import.dialog.title").getString(),
-                        FileDialog.LOAD
+                Path selected = chooseNativeGifFile();
+                Minecraft.getInstance().execute(() -> {
+                    if (selected != null) {
+                        openEditor(selected);
+                    } else {
+                        setStatus(Component.translatable("gif_icon_world.import.status.not_selected"), false);
+                    }
+                });
+            } catch (InterruptedException exception) {
+                Thread.currentThread().interrupt();
+                Minecraft.getInstance().execute(() ->
+                        setStatus(Component.translatable("gif_icon_world.import.status.not_selected"), false)
                 );
-                if (Files.isDirectory(worldDirectory)) {
-                    dialog.setDirectory(worldDirectory.toString());
-                }
-                dialog.setFile("*.gif");
-                dialog.setFilenameFilter((directory, name) ->
-                        name.toLowerCase(Locale.ROOT).endsWith(".gif"));
-                dialog.setVisible(true);
-
-                String selectedName = dialog.getFile();
-                String selectedDirectory = dialog.getDirectory();
-                if (selectedName != null && selectedDirectory != null) {
-                    selected = new File(selectedDirectory, selectedName).toPath();
-                }
-                dialog.dispose();
-            } catch (RuntimeException exception) {
+            } catch (IOException | RuntimeException exception) {
                 String message = safeMessage(exception);
                 Minecraft.getInstance().execute(() ->
                         setStatus(Component.translatable("gif_icon_world.import.status.dialog_error", message), true)
                 );
-                return;
             }
+        }, "GIF Icon World file picker");
 
-            Path result = selected;
-            Minecraft.getInstance().execute(() -> {
-                if (result != null) {
-                    openEditor(result);
-                } else {
-                    setStatus(Component.translatable("gif_icon_world.import.status.not_selected"), false);
-                }
-            });
-        });
+        pickerThread.setDaemon(true);
+        pickerThread.start();
+    }
+
+    private Path chooseNativeGifFile() throws IOException, InterruptedException {
+        String osName = System.getProperty("os.name", "").toLowerCase(Locale.ROOT);
+        if (osName.contains("win")) {
+            return chooseWindowsGifFile();
+        }
+
+        if (osName.contains("mac")) {
+            String script = "POSIX path of (choose file with prompt \"Choose a GIF for this world\" of type {\"GIF\"})";
+            return runFilePicker(List.of("osascript", "-e", script), true);
+        }
+
+        String initialFileName = worldDirectory.toString() + java.io.File.separator;
+        try {
+            return runFilePicker(List.of(
+                    "zenity",
+                    "--file-selection",
+                    "--title=Choose a GIF for this world",
+                    "--file-filter=GIF images | *.gif",
+                    "--filename=" + initialFileName
+            ), true);
+        } catch (IOException zenityUnavailable) {
+            try {
+                return runFilePicker(List.of(
+                        "kdialog",
+                        "--getopenfilename",
+                        worldDirectory.toString(),
+                        "GIF images (*.gif)",
+                        "--title",
+                        "Choose a GIF for this world"
+                ), true);
+            } catch (IOException kdialogUnavailable) {
+                throw new IOException("No supported native file picker was found (install zenity or kdialog).", kdialogUnavailable);
+            }
+        }
+    }
+
+    private Path chooseWindowsGifFile() throws IOException, InterruptedException {
+        String script = String.join(" ",
+                "$ErrorActionPreference = 'Stop';",
+                "[Console]::OutputEncoding = New-Object System.Text.UTF8Encoding($false);",
+                "Add-Type -AssemblyName System.Windows.Forms;",
+                "$dialog = New-Object System.Windows.Forms.OpenFileDialog;",
+                "$dialog.Title = [Environment]::GetEnvironmentVariable('GIF_ICON_WORLD_DIALOG_TITLE');",
+                "$dialog.Filter = [Environment]::GetEnvironmentVariable('GIF_ICON_WORLD_DIALOG_FILTER');",
+                "$dialog.FilterIndex = 1;",
+                "$dialog.Multiselect = $false;",
+                "$dialog.CheckFileExists = $true;",
+                "$initialDirectory = [Environment]::GetEnvironmentVariable('GIF_ICON_WORLD_INITIAL_DIR');",
+                "if ($initialDirectory -and [System.IO.Directory]::Exists($initialDirectory)) { $dialog.InitialDirectory = $initialDirectory; }",
+                "if ($dialog.ShowDialog() -eq [System.Windows.Forms.DialogResult]::OK) { [Console]::WriteLine($dialog.FileName); }",
+                "$dialog.Dispose();"
+        );
+
+        ProcessBuilder builder = new ProcessBuilder(
+                "powershell.exe",
+                "-NoLogo",
+                "-NoProfile",
+                "-STA",
+                "-WindowStyle",
+                "Hidden",
+                "-ExecutionPolicy",
+                "Bypass",
+                "-Command",
+                script
+        );
+        builder.redirectErrorStream(true);
+        builder.environment().put(
+                "GIF_ICON_WORLD_DIALOG_TITLE",
+                Component.translatable("gif_icon_world.import.dialog.title").getString()
+        );
+        builder.environment().put(
+                "GIF_ICON_WORLD_DIALOG_FILTER",
+                Component.translatable("gif_icon_world.import.dialog.filter").getString() + "|*.gif"
+        );
+        builder.environment().put("GIF_ICON_WORLD_INITIAL_DIR", worldDirectory.toString());
+
+        return runFilePicker(builder, true);
+    }
+
+    private Path runFilePicker(List<String> command, boolean cancelIsNormal)
+            throws IOException, InterruptedException {
+        return runFilePicker(new ProcessBuilder(command), cancelIsNormal);
+    }
+
+    private Path runFilePicker(ProcessBuilder builder, boolean cancelIsNormal)
+            throws IOException, InterruptedException {
+        builder.redirectErrorStream(true);
+        Process process = builder.start();
+        byte[] output;
+        try (var input = process.getInputStream()) {
+            output = input.readAllBytes();
+        }
+
+        int exitCode = process.waitFor();
+        String result = new String(output, StandardCharsets.UTF_8).trim();
+        if (exitCode != 0) {
+            if (cancelIsNormal && (exitCode == 1 || exitCode == 255)) {
+                return null;
+            }
+            String detail = result.isBlank() ? "Exit code " + exitCode : result;
+            throw new IOException(detail.length() > 300 ? detail.substring(0, 297) + "..." : detail);
+        }
+        if (result.isBlank()) {
+            return null;
+        }
+
+        Path selected = Path.of(result).toAbsolutePath().normalize();
+        if (!Files.isRegularFile(selected)) {
+            throw new IOException("The selected file could not be found.");
+        }
+        return selected;
     }
 
     private void openEditor(Path source) {
