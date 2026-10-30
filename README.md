@@ -1,6 +1,6 @@
 # GIF Icon World
 
-![GIF Icon World](src/main/resources/assets/gif_icon_world/icon.png)
+![GIF Icon World](src/main/resources/icon.png)
 
 GIF Icon World is a client-side Fabric mod for Minecraft Java 26.3. It lets each singleplayer save use an animated GIF in the world list.
 
