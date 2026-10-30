@@ -146,7 +146,8 @@ if not "%BUILD_EXIT%"=="0" goto :build_failed
 call :say ""
 call :say "[SUCCESS] Build completed."
 call :say "Output: %PROJECT_DIR%\build\libs"
-if exist "%PROJECT_DIR%\build\libs" explorer "%PROJECT_DIR%\build\libs"
+if not defined CI if exist "%PROJECT_DIR%\build\libs" explorer "%PROJECT_DIR%\build\libs"
+if defined CI exit /b 0
 call :say "Press any key to close this window."
 pause >nul
 exit /b 0
@@ -168,6 +169,7 @@ goto :fatal
 :fatal
 call :say ""
 call :say "The build stopped. This window is intentionally kept open."
+if defined CI exit /b 1
 call :say "Press any key to close."
 pause >nul
 exit /b 1
