@@ -19,7 +19,7 @@ if defined PROJECT_DIR (
 )
 
 if not defined PROJECT_DIR (
-  set "SEARCH_DIR=%~dp0"
+  for %%P in ("%~dp0.") do set "SEARCH_DIR=%%~fP"
   call :find_project
 )
 if not defined PROJECT_DIR (
@@ -191,7 +191,7 @@ exit /b 0
 
 :find_project
 if exist "%SEARCH_DIR%\build.gradle" if exist "%SEARCH_DIR%\gradle.properties" if exist "%SEARCH_DIR%\build-tools\check-minecraft-config.ps1" (
-  set "PROJECT_DIR=%SEARCH_DIR%"
+  for %%P in ("%SEARCH_DIR%") do set "PROJECT_DIR=%%~fP"
   exit /b 0
 )
 for %%P in ("%SEARCH_DIR%\..") do set "PARENT_DIR=%%~fP"
