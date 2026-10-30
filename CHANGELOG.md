@@ -1,5 +1,12 @@
 # Changelog
 
+## 1.2.5 - 2026-10-30
+
+### Fixed
+- Restore the original 512×512 project logo as an intact PNG in the standard Fabric resource path.
+- Find the vanilla Optimize World button using `EditWorldScreen.OPTIMIZE_BUTTON` instead of a guessed translation key.
+- Recalculate the GIF button position after each vanilla layout pass.
+
 ## 1.2.4 - 2026-10-30
 
 ### Fixed

@@ -1,6 +1,6 @@
 # GIF Icon World
 
-![Logo GIF Icon World](src/main/resources/icon.png)
+![Logo GIF Icon World](src/main/resources/assets/gif_icon_world/icon.png)
 
 GIF Icon World là mod Fabric chạy phía client cho Minecraft Java 26.3. Mod cho phép dùng ảnh GIF động làm biểu tượng của từng thế giới trong danh sách Chơi đơn.
 
