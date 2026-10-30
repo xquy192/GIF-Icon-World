@@ -6,6 +6,7 @@ import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.gui.screens.worldselection.EditWorldScreen;
 import net.minecraft.network.chat.Component;
+import net.minecraft.world.level.storage.LevelResource;
 import net.minecraft.world.level.storage.LevelStorageSource;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
@@ -25,7 +26,7 @@ public abstract class EditWorldScreenMixin extends Screen {
 
     @Inject(method = "init", at = @At("TAIL"))
     private void gificonworld$addGifIconButton(CallbackInfo ci) {
-        Path worldDirectory = this.levelAccess.getWorldDir();
+        Path worldDirectory = this.levelAccess.getLevelPath(LevelResource.ROOT);
         int buttonY = Math.min(this.height - 40, this.height / 2 + 137);
         this.addRenderableWidget(Button.builder(Component.literal("GIF Icon World"), button ->
                 Minecraft.getInstance().gui.setScreen(new GifIconImportScreen((Screen) (Object) this, worldDirectory)))

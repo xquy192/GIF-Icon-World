@@ -1,5 +1,12 @@
 # Changelog
 
+## 1.2.2 - 2026-10-30
+
+### Fixed
+- Corrected enum validation calls for GIF fit and playback settings.
+- Resolve the world save directory with `LevelStorageAccess#getLevelPath(LevelResource.ROOT)` for the Minecraft 26.3 client API.
+- Improved Windows build-helper error reporting so Gradle compiler diagnostics are preserved without a secondary PowerShell `Write-Error` failure.
+
 ## 1.2.1
 
 - Added a project logo to the mod metadata and repository assets.

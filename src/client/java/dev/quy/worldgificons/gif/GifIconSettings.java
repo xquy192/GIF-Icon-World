@@ -70,8 +70,8 @@ public final class GifIconSettings {
         endFrame = clamp(endFrame, startFrame, lastFrame);
         offsetX = clamp(offsetX, -32, 32);
         offsetY = clamp(offsetY, -32, 32);
-        fitMode = validEnum(fitMode, FitMode.CONTAIN);
-        playbackMode = validEnum(playbackMode, PlaybackMode.LOOP);
+        fitMode = validEnum(fitMode, FitMode.CONTAIN.name(), FitMode.values());
+        playbackMode = validEnum(playbackMode, PlaybackMode.LOOP.name(), PlaybackMode.values());
     }
 
     public FitMode getFitMode() {
