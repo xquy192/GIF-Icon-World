@@ -1,0 +1,28 @@
+{
+  "schemaVersion": 1,
+  "id": "gif_icon_world",
+  "version": "${version}",
+  "name": "GIF Icon World",
+  "description": "Use an animated GIF as a world icon in the singleplayer list.",
+  "authors": [
+    "xquy192"
+  ],
+  "contact": {
+    "homepage": "https://github.com/xquy192/GIF-Icon-World-",
+    "sources": "https://github.com/xquy192/GIF-Icon-World-",
+    "issues": "https://github.com/xquy192/GIF-Icon-World-/issues",
+    "email": "dinhxuanquy192@gmail.com",
+    "discord": "xuanquy192_21009"
+  },
+  "license": "MIT",
+  "icon": "assets/gif_icon_world/icon.png",
+  "environment": "client",
+  "mixins": [
+    "gif_icon_world.mixins.json"
+  ],
+  "depends": {
+    "fabricloader": ">=0.20.1",
+    "minecraft": "~26.3",
+    "java": ">=25"
+  }
+}

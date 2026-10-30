@@ -1,0 +1,13 @@
+{
+  "required": true,
+  "minVersion": "0.8",
+  "package": "dev.quy.worldgificons.mixin",
+  "compatibilityLevel": "JAVA_25",
+  "client": [
+    "WorldListEntryMixin",
+    "EditWorldScreenMixin"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}
