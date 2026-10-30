@@ -9,14 +9,13 @@ import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
 
 import java.awt.EventQueue;
-import java.awt.FileDialog;
-import java.awt.Frame;
-import java.awt.HeadlessException;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.List;
 import java.util.Locale;
+import javax.swing.JFileChooser;
+import javax.swing.filechooser.FileNameExtensionFilter;
 
 public final class GifIconImportScreen extends Screen {
     private static final long MAX_GIF_BYTES = 64L * 1024L * 1024L;
@@ -169,35 +168,41 @@ public final class GifIconImportScreen extends Screen {
     }
 
     private void chooseFile() {
-        try {
-            EventQueue.invokeLater(() -> {
-                Path selected = null;
-                try {
-                    FileDialog dialog = new FileDialog((Frame) null, "Chọn GIF động cho world", FileDialog.LOAD);
-                    dialog.setFilenameFilter(
-                            (directory, name) -> name.toLowerCase(Locale.ROOT).endsWith(".gif")
-                    );
-                    dialog.setVisible(true);
-                    if (dialog.getFile() != null && dialog.getDirectory() != null) {
-                        selected = Path.of(dialog.getDirectory(), dialog.getFile());
-                    }
-                    dialog.dispose();
-                } catch (HeadlessException ignored) {
-                    // Drag-and-drop remains available if the native file dialog cannot open.
-                }
+        EventQueue.invokeLater(() -> {
+            Path selected;
+            try {
+                JFileChooser chooser = new JFileChooser(
+                        Files.isDirectory(worldDirectory) ? worldDirectory.toFile() : null
+                );
+                chooser.setDialogTitle("Chọn ảnh GIF cho thế giới");
+                chooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
+                chooser.setMultiSelectionEnabled(false);
+                chooser.setAcceptAllFileFilterUsed(false);
+                chooser.setFileFilter(new FileNameExtensionFilter("Ảnh GIF (*.gif)", "gif"));
 
-                Path result = selected;
-                Minecraft.getInstance().execute(() -> {
-                    if (result != null) {
-                        openEditor(result);
-                    } else {
-                        setStatus("Chưa chọn file. Bạn vẫn có thể kéo thả GIF vào khung.", false);
-                    }
-                });
+                if (chooser.showOpenDialog(null) == JFileChooser.APPROVE_OPTION
+                        && chooser.getSelectedFile() != null) {
+                    selected = chooser.getSelectedFile().toPath();
+                } else {
+                    selected = null;
+                }
+            } catch (RuntimeException exception) {
+                String message = safeMessage(exception);
+                Minecraft.getInstance().execute(() ->
+                        setStatus("Không mở được cửa sổ chọn file: " + message, true)
+                );
+                return;
+            }
+
+            Path result = selected;
+            Minecraft.getInstance().execute(() -> {
+                if (result != null) {
+                    openEditor(result);
+                } else {
+                    setStatus("Bạn chưa chọn file GIF.", false);
+                }
             });
-        } catch (RuntimeException exception) {
-            setStatus("Không mở được hộp thoại file. Hãy kéo thả file GIF vào khung.", true);
-        }
+        });
     }
 
     private void openEditor(Path source) {
@@ -234,12 +239,22 @@ public final class GifIconImportScreen extends Screen {
 
     private void openWorldFolder() {
         try {
-            if (java.awt.Desktop.isDesktopSupported()) {
-                java.awt.Desktop.getDesktop().open(worldDirectory.toFile());
-            } else {
-                setStatus("Không thể mở File Explorer ở môi trường này.", true);
+            if (!Files.isDirectory(worldDirectory)) {
+                throw new IOException("Không tìm thấy thư mục save của thế giới.");
             }
-        } catch (Exception exception) {
+
+            String osName = System.getProperty("os.name", "").toLowerCase(Locale.ROOT);
+            ProcessBuilder opener;
+            if (osName.contains("win")) {
+                opener = new ProcessBuilder("explorer.exe", worldDirectory.toString());
+            } else if (osName.contains("mac")) {
+                opener = new ProcessBuilder("open", worldDirectory.toString());
+            } else {
+                opener = new ProcessBuilder("xdg-open", worldDirectory.toString());
+            }
+            opener.start();
+            setStatus("Đang mở thư mục thế giới.", false);
+        } catch (IOException | RuntimeException exception) {
             setStatus("Không mở được thư mục thế giới: " + safeMessage(exception), true);
         }
     }

@@ -1,5 +1,13 @@
 # Changelog
 
+## 1.2.6 - 2026-10-30
+
+### Fixed
+- Open the GIF picker in a file chooser and keep drag-and-drop available.
+- Open the selected world's save folder with the operating system's file manager.
+- Fit the visible GIF content to the icon without resetting playback settings.
+- Find the project folder from the build script location, including when the script is renamed or stored in a subfolder.
+
 ## 1.2.5 - 2026-10-30
 
 ### Fixed

@@ -410,18 +410,8 @@ public final class GifIconEditorScreen extends Screen {
     }
 
     private void autoFit() {
-        settings.speed = 1.0f;
-        settings.startFrame = 0;
-        settings.endFrame = animation.frameCount() - 1;
-        settings.offsetX = 0;
-        settings.offsetY = 0;
-        settings.zoom = 1.0f;
-        settings.fitMode = GifIconSettings.FitMode.CONTAIN.name();
-        settings.playbackMode = GifIconSettings.PlaybackMode.LOOP.name();
-        manualFrame = 0;
-        previewPaused = false;
-        previewStartMs = System.currentTimeMillis();
-        status = "Đã khôi phục căn ảnh mặc định.";
+        animation.fitToIcon(settings);
+        status = "Đã căn ảnh theo vùng nội dung GIF.";
         statusIsError = false;
         refreshModeButtonMessages();
         updatePreview(true);

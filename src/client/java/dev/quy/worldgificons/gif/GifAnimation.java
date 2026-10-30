@@ -162,6 +162,66 @@ public final class GifAnimation {
         return frames.get(Math.max(0, Math.min(frames.size() - 1, index)));
     }
 
+    public void fitToIcon(GifIconSettings settings) {
+        settings.sanitize(frames.size());
+
+        int start = settings.startFrame;
+        int end = settings.endFrame;
+        BufferedImage firstFrame = frames.get(start);
+        int canvasWidth = firstFrame.getWidth();
+        int canvasHeight = firstFrame.getHeight();
+
+        int minX = canvasWidth;
+        int minY = canvasHeight;
+        int maxX = -1;
+        int maxY = -1;
+
+        for (int frameIndex = start; frameIndex <= end; frameIndex++) {
+            BufferedImage frame = frames.get(frameIndex);
+            for (int y = 0; y < frame.getHeight(); y++) {
+                for (int x = 0; x < frame.getWidth(); x++) {
+                    if ((frame.getRGB(x, y) >>> 24) != 0) {
+                        minX = Math.min(minX, x);
+                        minY = Math.min(minY, y);
+                        maxX = Math.max(maxX, x);
+                        maxY = Math.max(maxY, y);
+                    }
+                }
+            }
+        }
+
+        settings.fitMode = GifIconSettings.FitMode.CONTAIN.name();
+        if (maxX < minX || maxY < minY) {
+            settings.zoom = 1.0f;
+            settings.offsetX = 0;
+            settings.offsetY = 0;
+            return;
+        }
+
+        double baseScale = Math.min(
+                (double) ICON_SIZE / canvasWidth,
+                (double) ICON_SIZE / canvasHeight
+        );
+        int contentWidth = maxX - minX + 1;
+        int contentHeight = maxY - minY + 1;
+        double zoom = Math.min(
+                (ICON_SIZE - 8.0) / (contentWidth * baseScale),
+                (ICON_SIZE - 8.0) / (contentHeight * baseScale)
+        );
+        zoom = Math.max(0.5, Math.min(2.0, zoom));
+
+        double scale = baseScale * zoom;
+        double contentCenterX = (minX + maxX + 1) / 2.0;
+        double contentCenterY = (minY + maxY + 1) / 2.0;
+        settings.zoom = (float) zoom;
+        settings.offsetX = Math.max(-32, Math.min(32,
+                (int) Math.round((canvasWidth / 2.0 - contentCenterX) * scale)
+        ));
+        settings.offsetY = Math.max(-32, Math.min(32,
+                (int) Math.round((canvasHeight / 2.0 - contentCenterY) * scale)
+        ));
+    }
+
     public int frameAt(long elapsedMs, GifIconSettings settings) {
         int start = Math.max(0, Math.min(frames.size() - 1, settings.startFrame));
         int end = Math.max(start, Math.min(

@@ -4,7 +4,7 @@ The project targets Minecraft 26.3. Build it with JDK 25 and Gradle 9.8.2.
 
 ## Windows
 
-Run `build.bat` from the project folder. The script looks for an installed JDK 25 or newer and Gradle 9.8.2. If it cannot find them, it downloads Temurin and Gradle into `%LOCALAPPDATA%\GifIconWorldBuild`. It does not change the system-wide `PATH`.
+Run `build.bat` from the project folder. It searches the script's folder and its parent folders for the project files, so the script can be renamed or kept in a subfolder. If you keep it outside the project, set `GIF_ICON_WORLD_PROJECT` to the project folder. The script looks for an installed JDK 25 or newer and Gradle 9.8.2. If it cannot find them, it downloads Temurin and Gradle into `%LOCALAPPDATA%\GifIconWorldBuild`. It does not change the system-wide `PATH`.
 
 The console stays open if the build fails. Check these logs:
 
